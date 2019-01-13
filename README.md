@@ -84,7 +84,7 @@ magicBlue.request('status')
 | setSchedule   | (newScheduleArray, deviceNames)| (oldScheduleArray, All Connected Devices) | Sets a timer schedule for each device. Can choose between single-use and repeating timers. Actions include adjusting brightness for Warm White color scheme, setting a particular RGB value, or a factory preset effect. |
 
 
-#### Preset Effects
+### Preset Effects
 ```js
 seven_color_cross_fade
 red_gradual_change
