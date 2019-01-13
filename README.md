@@ -9,7 +9,7 @@ There are multiple versions of the **Magicblue** bulb that are floating around. 
 I began the project by reading [Urish's Medium post](https://medium.com/@urish/reverse-engineering-a-bluetooth-lightbulb-56580fcb7546) and later referenced [Betree's unofficial python library](https://github.com/Betree/magicblue) for more specific bluetooth commands and schedule/status formats.
 
 ## Usage
-
+You can view the demo [here](https://magicblue.glitch.me) or remix your own project with the button below.
 [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/magicblue)
 
 Initialize click events for the Bluetooth Device Navigator. Can also be triggered manually using the magicblue.search() method.
