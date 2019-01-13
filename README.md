@@ -9,6 +9,7 @@ I began the project by reading [Urish's Medium post](https://medium.com/@urish/r
 ## Usage
 
 [![Remix on Glitch](https://cdn.glitch.com/2703baf2-b643-4da7-ab91-7ee2a2d00b5b%2Fremix-button.svg)](https://glitch.com/edit/#!/remix/magicblue)
+
 Initialize click events for the Bluetooth Device Navigator. Can also be triggered manually using the magicblue.search() method.
 ```js
 magicblue.init('.connect-button, .connect-another button') 
