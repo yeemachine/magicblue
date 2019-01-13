@@ -1,4 +1,6 @@
-# Magicblue.js - Smart Light with Web Bluetooth
+# Magicblue.js
+
+**Control Magicblue Smart Bulbs over Web Bluetooth**
 
 This is a small project aimed at reverse engineering one of the [cheaper Bluetooth lightbulbs](https://www.gearbest.com/smart-light-bulb/pp_230349.html) out there and controlling it directly through a browser without the official app. As of writing this, Web Bluetooth is only supported in Chrome. 
 
