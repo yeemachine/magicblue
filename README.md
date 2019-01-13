@@ -47,8 +47,12 @@ magicblue.schedule
 ```
 Some example functions that can be used after connected. See API section for more detailed params and defaults. 
 ```js
+magicblue.turnOn()
+magicblue.turnOff()
+magicblue.turnOnOff()
 magicblue.setRGB('255,0,0')
 magicblue.setWarmWhite(255)
+magicblue.setEffect('seven_color_stobe_flash')
 magicblue.setSchedule(scheduleList)
 magicBlue.request('status')
 ```
