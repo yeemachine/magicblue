@@ -4,7 +4,7 @@
 
 This is a small project aimed at reverse engineering one of the [cheaper Bluetooth lightbulbs](https://www.gearbest.com/smart-light-bulb/pp_230349.html) out there and controlling it directly through a browser without the official app. As of writing this, **Web Bluetooth is only supported in Chrome**. 
 
-There are multiple version of the **Magicblue** bulb that are floating around. It's possible some versions may be configured slightly differently and need further developement. I personally used [this bulb](https://www.amazon.com/Magic-Light-Bluetooth-Smart-Bulb/dp/B00Y6X93EQ?ref_=bl_dp_s_web_9321634011&th=1) for my experiments.
+There are multiple versions of the **Magicblue** bulb that are floating around. It's possible some versions are configured slightly differently and need further developement. I personally used [this bulb](https://www.amazon.com/Magic-Light-Bluetooth-Smart-Bulb/dp/B00Y6X93EQ?ref_=bl_dp_s_web_9321634011&th=1) for my experiments.
 
 I began the project by reading [Urish's Medium post](https://medium.com/@urish/reverse-engineering-a-bluetooth-lightbulb-56580fcb7546) and later referenced [Betree's unofficial python library](https://github.com/Betree/magicblue) for more specific bluetooth commands and schedule/status formats.
 
