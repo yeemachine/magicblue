@@ -67,7 +67,7 @@ magicBlue.request('status')
 | devices       | Object        | {deviceName:<code>BluetoothDevice</code>} | Returns an object containing all connected devices |
 | chars         | Object        | {deviceName:<code>BluetoothRemoteGATTCharacteristic</code> }| Returns an object containing write characteristics from all connected devices |
 | status        | Object        | {deviceName:{<br>on:<code>true\|false</code>,<br>mode:<code>'brightness'\|'rgb'\|'effect'</code>,<br>rgb:<code>[r,g,b]</code>,<br>brightness:<code>0->255</code>,<br>effect:<code>'preset_effect'</code>,<br>speed:<code>1->20</code>}<br>} | Returns an object containing the status from all connected devices |
-| schedule      | Object        | {deviceName:[<br>{repeat:<code>true\|false</code>,<br>repeatDays:<code>['monday -> sunday']</code>,<br>year:<code>20XX</code>,<br>month:<code>1->12</code>,<br>day:<code>1->31</code>,<br>mode:<code>'brightness'\|'rgb'\|'effect'</code>,<br>start:<code>0->1</code>,<br>end:<code>0->1</code>,<br>speed:<code>1->120(minutes) \| 1->20(effect speed)</code>,<br>rgb:<code>[r,g,b]</code>,<br>effect:<code>'preset_effect'</code>,}<br>]} | Returns an object containing an array of schedules from all connected devices. Max 6 schedules set per device. |
+| schedule      | Object        | {deviceName:[<br>{repeat:<code>true\|false</code>,<br>repeatDays:<code>['monday -> sunday']</code>,<br>year:<code>20XX</code>,<br>month:<code>1->12</code>,<br>day:<code>1->31</code>,<br>mode:<code>'brightness'\|'rgb'\|'effect'</code>,<br>start:<code>0->255</code>,<br>end:<code>0->255</code>,<br>speed:<code>1->120(minutes) \| 1->20(effect speed)</code>,<br>rgb:<code>[r,g,b]</code>,<br>effect:<code>'preset_effect'</code>,}<br>]} | Returns an object containing an array of schedules from all connected devices. Max 6 schedules set per device. |
 | reconnect     | Boolean       | Default:<code>false</code> | Toggle ability to auto-reconnect disconnected devices|
 | DEBUG         | Boolean       | Default:<code>false</code> | Toggle Console Logs|
 
@@ -84,7 +84,7 @@ magicBlue.request('status')
 | turnOff       | (deviceNames)| (All Connected Devices)   | Turns off selected devices. |
 | turnOnOff     | (deviceNames)| (All Connected Devices)   | Toggles ON/OFF based on state of first device in array.|
 | setRGB        | ('r,g,b', deviceNames)| (N/A, All Connected Devices) | Sets RGB color.|
-| setWarmWhite  | (intensity, deviceNames)| (255, All Connected Devices) | Sets Warm White color with desired intensity (1-255).|
+| setWarmWhite  | (intensity, deviceNames)| (255, All Connected Devices) | Sets Warm White color with desired intensity (0-255).|
 | setEffect     | (effectName, speed, deviceNames)| ('seven_color_cross_fade', 1, All Connected Devices) | Set a preset pattern and speed (1-20).
 | setSchedule   | (newScheduleArray, deviceNames)| (oldScheduleArray, All Connected Devices) | Sets a timer schedule for each device. Can choose between single-use and repeating timers. Actions include adjusting brightness for Warm White color scheme, setting a particular RGB value, or a factory preset effect. |
 

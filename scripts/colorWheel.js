@@ -50,7 +50,15 @@ function handleMouseMove(e) {
 
 function updateColor() {
 	if (oldColor != null && oldColor != "" && oldColor != colorWheel.color.rgbString) {
-		magicblue.setRGB([colorWheel.color.rgb.r, colorWheel.color.rgb.g, colorWheel.color.rgb.b].join(','));   
+    let rgb = [colorWheel.color.rgb.r, colorWheel.color.rgb.g, colorWheel.color.rgb.b].join(',')
+		magicblue.setRGB(rgb);  
+    let powerButton = document.querySelector('.power-button')
+    if(!powerButton.classList.contains('selected')){
+      powerButton.classList.add('selected')
+      document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    }
+    document.querySelector('.power-button').style.backgroundColor = 'rgb('+rgb+')'
+
 	}
 	oldColor = colorWheel.color.rgbString;
 }

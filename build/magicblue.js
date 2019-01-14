@@ -349,7 +349,8 @@
         scheduleItem.speed = (mode != 'rgb') ? e[9] : null
         scheduleItem.rgb = (mode === 'rgb') ? [e[9],e[10],e[11]] : null
         scheduleItem.effect = (mode === 'effect') ? getKeyByValue(DICT['presetList'],e[8]) : null
-
+        console.log(scheduleItem.end)
+        
         if (repeat === true){
           log('Schedule #'+(i+1)+' every ['+scheduleItem.repeatDays.join(',')+']')
         }else{
@@ -407,8 +408,8 @@
           actionArray = [effect,speed,start,end]
         }else if(mode ==='brightness'){
           let speed = schedule['speed'], //in minutes
-              start = Math.round(schedule['start']*255),
-              end = Math.round(schedule['end']*255),
+              start = schedule['start'],
+              end = schedule['end'],
               sunMode = (start < end) ? DICT.mode_sunrise : DICT.mode_sunset
           actionArray = [sunMode,speed,start,end]
         }
