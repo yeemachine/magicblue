@@ -296,13 +296,13 @@
               : (Object.values(DICT.presetList).includes(buffer[3])) ? 'effect'
               : 'rgb',
     rgb = deviceStatus.rgb = (mode === 'rgb') ? [buffer[6],buffer[7],buffer[8]] : null,
-    brightness = deviceStatus.brightness = (mode === 'brightness') ? (buffer[9]/255) : null,
+    brightness = deviceStatus.brightness = (mode === 'brightness') ? buffer[9] : null,
     effect = deviceStatus.effect = (mode === 'effect') ? (getKeyByValue(DICT.presetList,buffer[3])) : null,
     speed = deviceStatus.speed = (mode === 'effect') ? buffer[5] : null
     
     log('Light is '+power+'. Mode:'+mode)
     if(mode === 'brightness'){
-      log('Brightness:'+Math.round(brightness*100)+'%')
+      log('Brightness:'+Math.round(brightness/255*100)+'%')
     }else if(mode === 'effect'){
       log('Effect:'+effect+', Speed:'+speed)
     }else if(mode === 'rgb'){
@@ -349,7 +349,6 @@
         scheduleItem.speed = (mode != 'rgb') ? e[9] : null
         scheduleItem.rgb = (mode === 'rgb') ? [e[9],e[10],e[11]] : null
         scheduleItem.effect = (mode === 'effect') ? getKeyByValue(DICT['presetList'],e[8]) : null
-        console.log(scheduleItem.end)
         
         if (repeat === true){
           log('Schedule #'+(i+1)+' every ['+scheduleItem.repeatDays.join(',')+']')

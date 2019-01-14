@@ -62,10 +62,12 @@ magicblue.on('receiveNotif', function (e) {
       let rgb = magicblue.status[deviceName].rgb.join(',')
       document.querySelector('.power-button').style.backgroundColor = 'rgb('+rgb+')'
       document.querySelector('.rgb span').innerHTML = rgb
+      document.querySelector('.rgb').classList.add('selected');
     }
     if(magicblue.status[deviceName].mode === 'brightness'){
       let brightness = magicblue.status[deviceName].brightness || 0
       document.querySelector('.warmWhite span').innerHTML = brightness
+      document.querySelector('.warmWhite').classList.add('selected');
     }
     if(magicblue.status[deviceName].on === true){
       document.querySelector('.power-button').classList.add('selected');
@@ -100,6 +102,8 @@ const setRGB = () => {
   let matchColors = /([R][G][B][A]?[(]\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(\s*,\s*((0\.[0-9]{1})|(1\.0)|(1)))?[)])/i
   if (matchColors.test(color) === true){
     magicblue.setRGB(text)
+    document.querySelector('.rgb').classList.add('selected');
+    document.querySelector('.warmWhite').classList.remove('selected');
   }
 }
 document.querySelector('.rgb span').addEventListener('keyup',setRGB)
@@ -109,6 +113,9 @@ const setWarmWhite = () => {
   let matchNumber = /([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])/
   if (matchNumber.test(text) === true){
     magicblue.setWarmWhite(text)
+    document.querySelector('.warmWhite').classList.add('selected');
+    document.querySelector('.rgb').classList.remove('selected');
+
   }
 }
 document.querySelector('.warmWhite span').addEventListener('keyup',setWarmWhite)

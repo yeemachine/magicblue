@@ -36,6 +36,12 @@ container{
 container section{
   padding: 1.5vw;
 }
+container section{
+  opacity:0.4
+}
+container section.selected{
+  opacity:1
+}
 .rgb{
     margin-top: calc(56px + 3vw);
 }
