@@ -66,6 +66,7 @@ magicblue.on('receiveNotif', function (e) {
     }
     if(magicblue.status[deviceName].mode === 'brightness'){
       let brightness = magicblue.status[deviceName].brightness || 0
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
       document.querySelector('.warmWhite span').innerHTML = brightness
       document.querySelector('.warmWhite').classList.add('selected');
     }
@@ -104,6 +105,8 @@ const setRGB = () => {
     magicblue.setRGB(text)
     document.querySelector('.rgb').classList.add('selected');
     document.querySelector('.warmWhite').classList.remove('selected');
+    document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    document.querySelector('.power-button').style.backgroundColor = 'rgb('+text+')'
   }
 }
 document.querySelector('.rgb span').addEventListener('keyup',setRGB)
@@ -115,7 +118,8 @@ const setWarmWhite = () => {
     magicblue.setWarmWhite(text)
     document.querySelector('.warmWhite').classList.add('selected');
     document.querySelector('.rgb').classList.remove('selected');
-
+    document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    document.querySelector('.power-button').style.backgroundColor = 'rgb('+[text,text,text].join(',')+')'
   }
 }
 document.querySelector('.warmWhite span').addEventListener('keyup',setWarmWhite)
