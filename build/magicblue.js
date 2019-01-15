@@ -85,6 +85,12 @@
         on(event, callback) {
             this[__sym][event] = { callback: callback }
         }
+        connecting(deviceName) {
+            let event = this[__sym].connecting;
+            if (event && event.callback) {
+                event.callback(deviceName);
+            }
+        }
         connected(deviceName) {
             let event = this[__sym].connected;
             if (event && event.callback) {
@@ -294,6 +300,8 @@
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
     mode = deviceStatus.mode = (buffer[9]/255  > 0) ? 'brightness' 
               : (Object.values(DICT.presetList).includes(buffer[3])) ? 'effect'
+              : buffer[3] === DICT.mode_sunrise ? 'sunrise'
+              : buffer[3] === DICT.mode_sunset ? 'sunset'
               : 'rgb',
     rgb = deviceStatus.rgb = (mode === 'rgb') ? [buffer[6],buffer[7],buffer[8]] : null,
     brightness = deviceStatus.brightness = (mode === 'brightness') ? buffer[9] : null,
@@ -449,6 +457,7 @@
       }]
     })
     .then(device => {
+      event.connecting(device.name.trim()); 
       log('Found ' + device.name.trim());
       log('Connecting to GATT Server...');
       connect(device)

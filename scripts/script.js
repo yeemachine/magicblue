@@ -1,21 +1,21 @@
 let scheduleList = [
   {
-    hr:17,
-    min:30,
+    hr:18,
+    min:0,
     repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
     mode:'brightness',
     start:0,
-    end:255,
+    end:235,
     speed:1
-  },
+  }
+]
+let scheduleList2 = [
   {
-    year:2019,
-    month:12,
-    day:25,
-    hr:19,
-    min:0,
+    repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
+    hr:17,
+    min:30,
     mode:'brightness',
-    start:255,
+    start:225,
     end:0,
     speed:1
   }
@@ -25,10 +25,21 @@ magicblue.init('.connect-button, button.connect-another')
 // magicblue.DEBUG = true
 // magicblue.reconnect = true
 
+let loadingAnimation
+
+magicblue.on('connecting', (device) => {
+  console.log('Connecting to '+device);
+  let count = 0;
+  loadingAnimation = setInterval(()=>{
+    count++;
+    document.querySelector('.devices label').innerHTML = 'Connecting' + new Array(count % 5).join('.');
+  }, 500);
+});
+
 magicblue.on('connected', (device) => {
   console.log(device + ' is connected.');
   magicblue.request('status,schedule',device) //get Status/Scedule of Bulb
-
+  clearInterval(loadingAnimation)
   document.querySelector('.devices').innerHTML = '<label>Connected</label>'+Object.keys(magicblue.devices).join(', ')
   
   if (Object.keys(magicblue.devices).length === 1){
@@ -66,6 +77,18 @@ magicblue.on('receiveNotif', function (e) {
     }
     if(magicblue.status[deviceName].mode === 'brightness'){
       let brightness = magicblue.status[deviceName].brightness || 0
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
+      document.querySelector('.warmWhite span').innerHTML = brightness
+      document.querySelector('.warmWhite').classList.add('selected');
+    }
+    if(magicblue.status[deviceName].mode === 'sunrise'){
+      let brightness = 255
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
+      document.querySelector('.warmWhite span').innerHTML = brightness
+      document.querySelector('.warmWhite').classList.add('selected');
+    }
+    if(magicblue.status[deviceName].mode === 'sunset'){
+      let brightness = 0
       document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
       document.querySelector('.warmWhite span').innerHTML = brightness
       document.querySelector('.warmWhite').classList.add('selected');
