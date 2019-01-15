@@ -1,13 +1,63 @@
 body {
     background: #fff;
 }
+nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  width:97vw;
+  padding:1.5vw;
+  position:fixed;
+  top:0;
+  left:0;
+  z-index:999;
+  background-color:rgb(245,245,245)
+}
+.buttons{
+}
+.devices{
+  display: flex;
+  flex-direction: column;
+}
+label{
+  font-size:12px
+}
+div{
+    font-size:18px;
+}
+button{
+  font-size:12px;
+}
+button.selected{
+}
+container{
+
+}
+container section{
+  padding: 1.5vw;
+}
+container section{
+  opacity:0.4
+}
+container section.selected{
+  opacity:1
+}
+.rgb{
+    margin-top: calc(56px + 3vw);
+}
+.rgb span, .warmWhite span{
+  border-bottom: 1px solid;
+}
+.wheel{
+}
 .schedule{
     z-index: 999;
     top: 0;
     left: 0;
 }
 .mdl-layout__container{
-  position:relative
+  position:relative;
+  margin-top: 15vh;
 }
 .app-layout {
     display: flex;
@@ -23,9 +73,9 @@ body {
     flex-direction: column;
 }
 
-i.material-icons {
+/* i.material-icons {
     max-width: 24px;
-}
+} */
 
 .color-buttons {
     display: flex; 
@@ -53,17 +103,17 @@ i.material-icons {
     display: inherit;
 }
 
-.connect-another-icon {
+/* .connect-another-icon {
     top: 17px !important;
     left: 4px !important;
     margin-left: -10px !important;
     position: relative !important;
     float: right !important;
-}
+} */
 
-.connect-another {
+/* .connect-another {
     margin-left: 10px;
-}
+} */
 
 #on-off {
     background-color: #fff;

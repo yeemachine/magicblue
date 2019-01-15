@@ -1,38 +1,49 @@
 let scheduleList = [
   {
-    hr:17,
-    min:30,
+    hr:18,
+    min:0,
     repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
     mode:'brightness',
     start:0,
-    end:1,
+    end:235,
     speed:1
-  },
+  }
+]
+let scheduleList2 = [
   {
-    year:2019,
-    month:12,
-    day:25,
-    hr:19,
-    min:0,
+    repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
+    hr:17,
+    min:30,
     mode:'brightness',
-    start:1,
+    start:225,
     end:0,
     speed:1
   }
 ]
 
-magicblue.init('.connect-button, .connect-another button')
+magicblue.init('.connect-button, button.connect-another')
 // magicblue.DEBUG = true
 // magicblue.reconnect = true
+
+let loadingAnimation
+
+magicblue.on('connecting', (device) => {
+  console.log('Connecting to '+device);
+  let count = 0;
+  loadingAnimation = setInterval(()=>{
+    count++;
+    document.querySelector('.devices label').innerHTML = 'Connecting' + new Array(count % 5).join('.');
+  }, 500);
+});
 
 magicblue.on('connected', (device) => {
   console.log(device + ' is connected.');
   magicblue.request('status,schedule',device) //get Status/Scedule of Bulb
-
+  clearInterval(loadingAnimation)
+  document.querySelector('.devices').innerHTML = '<label>Connected</label>'+Object.keys(magicblue.devices).join(', ')
+  
   if (Object.keys(magicblue.devices).length === 1){
-  document.querySelector('.connect-button').classList.add('hidden');
-	document.querySelector('.connect-another').classList.remove('hidden');
-	document.querySelector('.wheel').classList.remove('hidden');
+	document.querySelector('container').classList.remove('hidden');
 	document.querySelector('.mic-button').classList.remove('hidden');
 	document.querySelector('.power-button').classList.remove('hidden'); 
   }
@@ -41,12 +52,14 @@ magicblue.on('connected', (device) => {
 magicblue.on('disconnected', function (e) {
   console.log(e.device+' is '+e.state+'.');
   console.log(magicblue.devices)
+  
   if (Object.keys(magicblue.devices).length === 0){
-    document.querySelector('.connect-button').classList.remove('hidden');
-    document.querySelector('.connect-another').classList.add('hidden');
-    document.querySelector('.wheel').classList.add('hidden');
+    document.querySelector('container').classList.add('hidden');
     document.querySelector('.mic-button').classList.add('hidden');
-    document.querySelector('.power-button').classList.add('hidden');  
+    document.querySelector('.power-button').classList.add('hidden'); 
+    document.querySelector('.devices').innerHTML = '<label>Bluetooth</label>Connect any Magic Blue Bluetooth Light Bulb'
+  }else{
+    document.querySelector('.devices').innerHTML = '<label>Connected</label>'+Object.keys(magicblue.devices).join(', ')
   }
 });
 
@@ -55,7 +68,85 @@ magicblue.on('receiveNotif', function (e) {
   let notifType = e.type
   let notifObj = magicblue[notifType][deviceName]
   console.log(notifObj);
+  if (Object.keys(magicblue.devices).length === 1){
+    if(magicblue.status[deviceName].mode === 'rgb'){
+      let rgb = magicblue.status[deviceName].rgb.join(',')
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+rgb+')'
+      document.querySelector('.rgb span').innerHTML = rgb
+      document.querySelector('.rgb').classList.add('selected');
+    }
+    if(magicblue.status[deviceName].mode === 'brightness'){
+      let brightness = magicblue.status[deviceName].brightness || 0
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
+      document.querySelector('.warmWhite span').innerHTML = brightness
+      document.querySelector('.warmWhite').classList.add('selected');
+    }
+    if(magicblue.status[deviceName].mode === 'sunrise'){
+      let brightness = 255
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
+      document.querySelector('.warmWhite span').innerHTML = brightness
+      document.querySelector('.warmWhite').classList.add('selected');
+    }
+    if(magicblue.status[deviceName].mode === 'sunset'){
+      let brightness = 0
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+brightness,brightness,brightness+')'
+      document.querySelector('.warmWhite span').innerHTML = brightness
+      document.querySelector('.warmWhite').classList.add('selected');
+    }
+    if(magicblue.status[deviceName].on === true){
+      document.querySelector('.power-button').classList.add('selected');
+      document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    }
+  }
 });
+
+
+
+const toggleClick = () => {
+  if(event.currentTarget.classList.contains('selected')){
+    event.currentTarget.classList.remove('selected')
+    if(event.currentTarget.classList.contains('power-button')){
+      document.querySelector('.power-button i').innerHTML = 'lightbulb_outline'
+    }
+  }else{
+    event.currentTarget.classList.add('selected')
+    if(event.currentTarget.classList.contains('power-button')){
+      document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    }
+  }
+}
+
+document.querySelectorAll('.power-button').forEach((e)=>{
+  e.addEventListener('click', toggleClick);
+})
+
+const setRGB = () => {
+  let text = event.currentTarget.innerText.trim()
+  var color = 'rgb('+text+')';
+  let matchColors = /([R][G][B][A]?[(]\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\s*,\s*([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])(\s*,\s*((0\.[0-9]{1})|(1\.0)|(1)))?[)])/i
+  if (matchColors.test(color) === true){
+    magicblue.setRGB(text)
+    document.querySelector('.rgb').classList.add('selected');
+    document.querySelector('.warmWhite').classList.remove('selected');
+    document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    document.querySelector('.power-button').style.backgroundColor = 'rgb('+text+')'
+  }
+}
+document.querySelector('.rgb span').addEventListener('keyup',setRGB)
+
+const setWarmWhite = () => {
+  let text = event.currentTarget.innerText.trim()
+  let matchNumber = /([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])/
+  if (matchNumber.test(text) === true){
+    magicblue.setWarmWhite(text)
+    document.querySelector('.warmWhite').classList.add('selected');
+    document.querySelector('.rgb').classList.remove('selected');
+    document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    document.querySelector('.power-button').style.backgroundColor = 'rgb('+[text,text,text].join(',')+')'
+  }
+}
+document.querySelector('.warmWhite span').addEventListener('keyup',setWarmWhite)
+
 
 const red = () => {
   magicblue.setRGB('255,0,0')

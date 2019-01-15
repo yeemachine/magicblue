@@ -13,56 +13,40 @@
     
     <!-- Libraries -->
     <script src="/build/magicblue.js" defer></script>
-    <script src="/scripts/iro.min.js"></script>
     <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
 
     <!-- Custom Scripts -->
-    <script src="/scripts/script.js" defer></script>
-    <script src="/scripts/colorWheel.js" defer></script>
-    
+    <script src="/scripts/script.js" defer></script>    
   </head>  
-  <body>    
-    <div class="app-layout mdl-layout mdl-js-layout">
-
-		<main class="mdl-layout__content">
-
-			<div class="title-and-connect">
-				<h3 id="title">Magic Light Bulb</h3>
-        <div class="connect-another hidden">
-					<button class="mdl-button mdl-js-button mdl-button--fab mdl-button--raised mdl-button--colored mdl-js-ripple-effect"
-					    style="background: rgb(63,81,181); top: 15px;">
-            <i class="material-icons connect-another-icon">bluetooth</i> +
-          </button>
-			  </div>
-			</div>
-
-			<button class="connect-button mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-          <i class="material-icons">bluetooth</i> Connect
-      </button>
-
-			<div class="power-button hidden">
-				<button onclick="magicblue.turnOnOff()" class="mdl-button mdl-js-button mdl-button--fab mdl-button--raised mdl-js-ripple-effect on-off">
-          <i class="material-icons">lightbulb_outline</i>
-        </button>
-			</div>
-      
-      <div class="wheel hidden" id="color-wheel"></div>
-
-			<div class="mic-button hidden">
-				<button onclick="listen()" class="mdl-button mdl-js-button mdl-button--fab mdl-button--raised mdl-js-ripple-effect">
+  <body>  
+    <nav>
+      <div class="devices">
+        <label>Bluetooth</label>
+        Connect any Magic Blue Bluetooth Light Bulb
+      </div>
+      <div class="buttons">
+        <button onclick="listen()" class="mic-button hidden selected mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
           <i class="material-icons">microphone</i>
         </button>
-        <button onclick="magicblue.request()" class="mdl-button mdl-js-button mdl-button--fab mdl-button--raised mdl-js-ripple-effect">
-          <i class="material-icons">alarm</i>
+        <button onclick="magicblue.turnOnOff()" class="power-button hidden mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+          <i class="material-icons">lightbulb_outline</i>
         </button>
-        <button onclick="magicblue.setSchedule(scheduleList)" class="mdl-button mdl-js-button mdl-button--fab mdl-button--raised mdl-js-ripple-effect">
-          <i class="material-icons">add_alarm</i>
+        <button class="connect-button selected mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+          <i class="material-icons connect-another-icon">bluetooth</i>
         </button>
-			</div>
-      
-		</main>
-	</div>
+      </div>
+    </nav>
+    <container class="hidden">
+    <section class="rgb">
+      <label>RGB</label>
+      <div>rgb( <span contenteditable="true">null</span> )</div>
+    </section>
+    <section class="warmWhite">
+      <label>Warm White</label>
+      <div>brightness( <span contenteditable="true">null</span> )</div>
+    </section>
+    </container>
 
   </body>
 </html>

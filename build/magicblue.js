@@ -85,6 +85,12 @@
         on(event, callback) {
             this[__sym][event] = { callback: callback }
         }
+        connecting(deviceName) {
+            let event = this[__sym].connecting;
+            if (event && event.callback) {
+                event.callback(deviceName);
+            }
+        }
         connected(deviceName) {
             let event = this[__sym].connected;
             if (event && event.callback) {
@@ -294,15 +300,17 @@
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
     mode = deviceStatus.mode = (buffer[9]/255  > 0) ? 'brightness' 
               : (Object.values(DICT.presetList).includes(buffer[3])) ? 'effect'
+              : buffer[3] === DICT.mode_sunrise ? 'sunrise'
+              : buffer[3] === DICT.mode_sunset ? 'sunset'
               : 'rgb',
     rgb = deviceStatus.rgb = (mode === 'rgb') ? [buffer[6],buffer[7],buffer[8]] : null,
-    brightness = deviceStatus.brightness = (mode === 'brightness') ? (buffer[9]/255) : null,
+    brightness = deviceStatus.brightness = (mode === 'brightness') ? buffer[9] : null,
     effect = deviceStatus.effect = (mode === 'effect') ? (getKeyByValue(DICT.presetList,buffer[3])) : null,
     speed = deviceStatus.speed = (mode === 'effect') ? buffer[5] : null
     
     log('Light is '+power+'. Mode:'+mode)
     if(mode === 'brightness'){
-      log('Brightness:'+Math.round(brightness*100)+'%')
+      log('Brightness:'+Math.round(brightness/255*100)+'%')
     }else if(mode === 'effect'){
       log('Effect:'+effect+', Speed:'+speed)
     }else if(mode === 'rgb'){
@@ -349,7 +357,7 @@
         scheduleItem.speed = (mode != 'rgb') ? e[9] : null
         scheduleItem.rgb = (mode === 'rgb') ? [e[9],e[10],e[11]] : null
         scheduleItem.effect = (mode === 'effect') ? getKeyByValue(DICT['presetList'],e[8]) : null
-
+        
         if (repeat === true){
           log('Schedule #'+(i+1)+' every ['+scheduleItem.repeatDays.join(',')+']')
         }else{
@@ -407,8 +415,8 @@
           actionArray = [effect,speed,start,end]
         }else if(mode ==='brightness'){
           let speed = schedule['speed'], //in minutes
-              start = Math.round(schedule['start']*255),
-              end = Math.round(schedule['end']*255),
+              start = schedule['start'],
+              end = schedule['end'],
               sunMode = (start < end) ? DICT.mode_sunrise : DICT.mode_sunset
           actionArray = [sunMode,speed,start,end]
         }
@@ -449,6 +457,7 @@
       }]
     })
     .then(device => {
+      event.connecting(device.name.trim()); 
       log('Found ' + device.name.trim());
       log('Connecting to GATT Server...');
       connect(device)
