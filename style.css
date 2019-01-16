@@ -1,5 +1,6 @@
 body {
     background: #fff;
+  position:absolute;
 }
 nav{
   display:flex;
@@ -29,6 +30,9 @@ button{
   font-size:12px;
 }
 button.selected{
+}
+.schedule>div{
+  max-width:50%;
 }
 container{
 

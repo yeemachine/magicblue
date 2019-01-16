@@ -296,12 +296,12 @@
   },
   // Decode Device Status
   decodeStatus = (buffer,deviceName) => { 
+    console.log(buffer)
     let deviceStatus = a.status[deviceName] = {},
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
-    mode = deviceStatus.mode = (buffer[9]/255  > 0) ? 'brightness' 
+    mode = deviceStatus.mode = buffer[3] === DICT.mode_sunrise ? 'sunrise'
               : (Object.values(DICT.presetList).includes(buffer[3])) ? 'effect'
-              : buffer[3] === DICT.mode_sunrise ? 'sunrise'
-              : buffer[3] === DICT.mode_sunset ? 'sunset'
+              : (buffer[9]/255  > 0) ? 'brightness' 
               : 'rgb',
     rgb = deviceStatus.rgb = (mode === 'rgb') ? [buffer[6],buffer[7],buffer[8]] : null,
     brightness = deviceStatus.brightness = (mode === 'brightness') ? buffer[9] : null,
