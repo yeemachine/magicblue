@@ -40,15 +40,21 @@
     <container class="hidden">
     <section class="rgb">
       <label>RGB</label>
-      <div>rgb( <span contenteditable="true">null</span> )</div>
+      <div>
+        <input type="range" min="0" max="255" value="125" class="slider" id="redSlider">
+        <input type="range" min="0" max="255" value="125" class="slider" id="greenSlider">
+        <input type="range" min="0" max="255" value="125" class="slider" id="blueSlider">
+      </div>
     </section>
     <section class="warmWhite">
       <label>Warm White</label>
-      <div>brightness( <span contenteditable="true">null</span> )</div>
+      <div>
+        <input type="range" min="0" max="255" value="125" class="slider" id="whiteSlider">
+      </div>
     </section>
     <section class="effect">
       <label>Effects</label>
-      <div>Preset(<select></select>)</div>
+      <div><select></select></div>
     </section>
     <section class="schedule">
       <label>Schedule</label>

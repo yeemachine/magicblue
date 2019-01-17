@@ -1,4 +1,4 @@
-//MagicBlue Bluetooth LED Controller V.1.0.0
+//MagicBlue Bluetooth LED Controller V.1.0.1
 (a => {
   
 //Private Property ---------------------------------------------------
@@ -296,7 +296,6 @@
   },
   // Decode Device Status
   decodeStatus = (buffer,deviceName) => { 
-    console.log(buffer)
     let deviceStatus = a.status[deviceName] = {},
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
     mode = deviceStatus.mode = buffer[3] === DICT.mode_sunrise ? 'sunrise'
@@ -357,6 +356,7 @@
         scheduleItem.speed = (mode != 'rgb') ? e[9] : null
         scheduleItem.rgb = (mode === 'rgb') ? [e[9],e[10],e[11]] : null
         scheduleItem.effect = (mode === 'effect') ? getKeyByValue(DICT['presetList'],e[8]) : null
+        scheduleItem.dateTime = new Date(scheduleItem.year, scheduleItem.month, scheduleItem.day, scheduleItem.hr, scheduleItem.min, scheduleItem.sec)
         
         if (repeat === true){
           log('Schedule #'+(i+1)+' every ['+scheduleItem.repeatDays.join(',')+']')
