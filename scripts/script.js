@@ -23,88 +23,83 @@ let scheduleList2 = [
 
 magicblue.init('.connect-button, button.connect-another')
 // magicblue.DEBUG = true
-// magicblue.reconnect = true
+magicblue.reconnect = true
 
-
+const hideAll = () => {
+  document.querySelector('container').classList.add('hidden');
+  document.querySelector('.mic-button').classList.add('hidden');
+  document.querySelector('.power-button').classList.add('hidden'); 
+  document.querySelector('.devices').innerHTML = '<label>Bluetooth</label><div>Connect any Magic Blue Bluetooth Light Bulb</div>'
+},
+showAll = () => {
+  document.querySelector('container').classList.remove('hidden');
+	document.querySelector('.mic-button').classList.remove('hidden');
+	document.querySelector('.power-button').classList.remove('hidden'); 
+  document.querySelector('.devices').innerHTML = '<label>Connected</label><div>'+Object.keys(magicblue.devices).join(', ')+'</div>'
+}
 
 let loadingAnimation
-
 magicblue.on('connecting', (device) => {
   console.log('Connecting to '+device);
   let count = 0;
-  loadingAnimation = setInterval(()=>{
+  loadingAnimation = setInterval(() => {
     count++;
     document.querySelector('.devices label').innerHTML = 'Connecting' + new Array(count % 10).join('.');
   }, 500);
 });
-
 magicblue.on('connected', (device) => {
   console.log(device + ' is connected.');
   magicblue.request('status,schedule',device) //get Status/Scedule of Bulb
   clearInterval(loadingAnimation)
-  document.querySelector('.devices').innerHTML = '<label>Connected</label>'+Object.keys(magicblue.devices).join(', ')
-  
-  if (Object.keys(magicblue.devices).length === 1){
-	document.querySelector('container').classList.remove('hidden');
-	document.querySelector('.mic-button').classList.remove('hidden');
-	document.querySelector('.power-button').classList.remove('hidden'); 
-  }
+  showAll()
 });
-
 magicblue.on('disconnected', function (e) {
-  console.log(e.device+' is '+e.state+'.');
-  console.log(magicblue.devices)
-  
-  if (Object.keys(magicblue.devices).length === 0){
-    document.querySelector('container').classList.add('hidden');
-    document.querySelector('.mic-button').classList.add('hidden');
-    document.querySelector('.power-button').classList.add('hidden'); 
-    document.querySelector('.devices').innerHTML = '<label>Bluetooth</label>Connect any Magic Blue Bluetooth Light Bulb'
-  }else{
-    document.querySelector('.devices').innerHTML = '<label>Connected</label>'+Object.keys(magicblue.devices).join(', ')
+  console.log(e+' is disconnected.');
+  document.querySelector('.devices div').innerHTML = Object.keys(magicblue.devices).join(', ')
+  if(!Object.keys(magicblue.devices).length){
+    hideAll()
   }
 });
-
 magicblue.on('receiveNotif', function (e) {
-  let deviceName = e.device
-  let notifType = e.type
-  let notifObj = magicblue[notifType][deviceName]
+  let deviceName = e.device,
+  notifType = e.type,
+  notifObj = magicblue[notifType][deviceName]
   // console.log(notifObj);
   if(notifType === 'status'){
-    if (Object.keys(magicblue.devices).length === 1){
-      if(magicblue.status[deviceName].mode === 'rgb'){
-        let rgb = magicblue.status[deviceName].rgb.join(',')
-        document.querySelector('.power-button').style.backgroundColor = 'rgb('+rgb+')'
-        document.querySelector('.rgb').classList.add('selected');
-        document.querySelector('#redSlider').value = magicblue.status[deviceName].rgb[0]
-        document.querySelector('#greenSlider').value = magicblue.status[deviceName].rgb[1]
-        document.querySelector('#blueSlider').value = magicblue.status[deviceName].rgb[2]
-      }
-      if(magicblue.status[deviceName].mode === 'brightness'){
-        let brightness = magicblue.status[deviceName].brightness
-        let HSLbrightness = brightness/255 * 90
-        document.querySelector('.power-button').style.backgroundColor = 'hsl(49, 100%, '+HSLbrightness+'%)'
-        document.querySelector('.warmWhite').classList.add('selected');
-        document.querySelector('#whiteSlider').value = brightness
-      }
-      if(magicblue.status[deviceName].mode === 'effect'){
-        let effect = magicblue.status[deviceName].effect
-        console.log(effect)
-        document.querySelector('.effect').classList.add('selected');
-        document.querySelector('option.'+effect).selected = true
-        console.log(document.querySelector('option.'+effect))
-      }
-      if(magicblue.status[deviceName].on === true){
-        document.querySelector('.power-button').classList.add('selected');
-        document.querySelector('.power-button i').innerHTML = 'lightbulb'
-      }
+    if(magicblue.status[deviceName].mode === 'rgb'){
+      let rgb = magicblue.status[deviceName].rgb.join(',')
+      document.querySelector('.power-button').style.backgroundColor = 'rgb('+rgb+')'
+      document.querySelector('.rgb').classList.add('selected');
+      document.querySelectorAll('.warmWhite, .effect').forEach((e)=>{e.classList.remove('selected');})
+      document.querySelector('#redSlider').value = magicblue.status[deviceName].rgb[0]
+      document.querySelector('#greenSlider').value = magicblue.status[deviceName].rgb[1]
+      document.querySelector('#blueSlider').value = magicblue.status[deviceName].rgb[2]
     }
+    if(magicblue.status[deviceName].mode === 'brightness'){
+      let brightness = magicblue.status[deviceName].brightness
+      let HSLbrightness = brightness/255 * 90
+      document.querySelector('.power-button').style.backgroundColor = 'hsl(49, 100%, '+HSLbrightness+'%)'
+      document.querySelector('.warmWhite').classList.add('selected');
+      document.querySelectorAll('.rgb, .effect').forEach((e)=>{e.classList.remove('selected');})
+      document.querySelector('#whiteSlider').value = brightness
+    }
+    if(magicblue.status[deviceName].mode === 'effect'){
+      let effect = magicblue.status[deviceName].effect
+      console.log(effect)
+      document.querySelector('.effect').classList.add('selected');
+      document.querySelectorAll('.warmWhite, .rgb').forEach((e)=>{e.classList.remove('selected');})
+      document.querySelector('option.'+effect).selected = true
+      console.log(document.querySelector('option.'+effect))
+    }
+    if(magicblue.status[deviceName].on === true){
+      document.querySelector('.power-button').classList.add('selected');
+      document.querySelector('.power-button i').innerHTML = 'lightbulb'
+    }  
   }else if(notifType === 'schedule'){
     let container = document.querySelector('.schedule div')
     while(container.firstChild){
     container.removeChild(container.firstChild);
     }
-    
     magicblue.schedule[deviceName].forEach((e,i)=>{
       let mode = e.mode
       let repeat = e.repeat
@@ -147,13 +142,9 @@ magicblue.on('receiveNotif', function (e) {
 
       document.querySelector('.schedule div').insertAdjacentHTML( 'beforeend', '<div>'+string+'</div>' );
       document.querySelector('.schedule').classList.add('selected');
-    })
-    
+    })  
   }
 });
-
-
-
 const toggleClick = () => {
   if(event.currentTarget.classList.contains('selected')){
     event.currentTarget.classList.remove('selected')
@@ -170,9 +161,6 @@ const toggleClick = () => {
 document.querySelectorAll('.power-button').forEach((e)=>{
   e.addEventListener('click', toggleClick);
 })
-
-
-
 document.querySelectorAll('.rgb input').forEach((e)=>{
   e.addEventListener('input', ()=>{
     let r = document.querySelector('#redSlider').value
@@ -185,7 +173,6 @@ document.querySelectorAll('.rgb input').forEach((e)=>{
     document.querySelector('.power-button i').innerHTML = 'lightbulb'
   });
 })
-
 document.querySelector('.warmWhite input').addEventListener('input',()=>{
   document.querySelectorAll('.warmWhite, .power-button').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.rgb, .effect').forEach((e)=>{e.classList.remove('selected');})
@@ -195,7 +182,6 @@ document.querySelector('.warmWhite input').addEventListener('input',()=>{
   document.querySelector('.power-button').style.backgroundColor = 'hsl(49, 100%, '+HSLintensity+'%)'
   magicblue.setWarmWhite(intensity)
 })
-
 Object.keys(magicblue.dict.presetList).forEach((e,i)=>{
   let node = document.createElement("option")
   node.value = e
@@ -203,54 +189,13 @@ Object.keys(magicblue.dict.presetList).forEach((e,i)=>{
   node.classList.add(e)
   document.querySelector('.effect select').appendChild(node)
 })
-
 document.querySelector('.effect select').addEventListener('change',()=>{
   magicblue.setEffect(event.target.value)
   document.querySelector('.power-button i').innerHTML = 'lightbulb'
   document.querySelectorAll('.effect, .power-button').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.warmWhite, .rgb').forEach((e)=>{e.classList.remove('selected');})
-
 })
 
-
-const red = () => {
-  magicblue.setRGB('255,0,0')
-},
-green = () => {
-  magicblue.setRGB('0,255,0')
-},
-blue = () => {
-  magicblue.setRGB('0,0,255')
-},
-warmWhite = () => {
-  magicblue.setWarmWhite()
-},
-turnOn = () => {
-  magicblue.turnOn()
-},
-turnOff = () => {
-  magicblue.turnOff()
-},
-disconnect = () => {
-  magicblue.disconnect()
-}
-
-function listen() {
-	annyang.start({
-		continuous: true
-	});
-}
-// Voice commands
-annyang.addCommands({
-	'red': red,
-	'green': green,
-	'blue': blue,
-  'warm white :intensity': warmWhite,
-  'white': warmWhite,
-	'turn on': turnOn,
-	'turn off': turnOff,
-  'disconnect':disconnect
-});
 
 
 

@@ -1,4 +1,4 @@
-//MagicBlue Bluetooth LED Controller V.1.0.1
+//MagicBlue Bluetooth LED Controller V.1.0.2
 (a => {
   
 //Private Property ---------------------------------------------------
@@ -79,48 +79,44 @@
   eventHandler = (() => {
     let __sym = Symbol('eClass');
     class eClass {
-        constructor() {
-            this[__sym] = {};
+      constructor() {
+        this[__sym] = {};
+      }
+      on(event, callback) {
+        this[__sym][event] = { callback: callback }
+      }
+      connecting(deviceName) {
+        let event = this[__sym].connecting;
+        if (event && event.callback) {
+            event.callback(deviceName);
         }
-        on(event, callback) {
-            this[__sym][event] = { callback: callback }
+      }
+      connected(deviceName) {
+        let event = this[__sym].connected;
+        if (event && event.callback) {
+            event.callback(deviceName);
         }
-        connecting(deviceName) {
-            let event = this[__sym].connecting;
-            if (event && event.callback) {
-                event.callback(deviceName);
-            }
+      }
+      disconnected(deviceName) {
+        let event = this[__sym].disconnected;
+        if (event && event.callback) {
+          event.callback(deviceName);
         }
-        connected(deviceName) {
-            let event = this[__sym].connected;
-            if (event && event.callback) {
-                event.callback(deviceName);
-            }
+      }
+      receiveNotif(deviceName,type) {
+        let event = this[__sym].receiveNotif;
+        if (event && event.callback) {
+          event.callback({
+            'device':deviceName,
+            'type':type
+          });
         }
-        disconnected(deviceName) {
-            let event = this[__sym].disconnected;
-            if (event && event.callback) {
-              let state = (typeof a.devices[deviceName] !== 'undefined') ? 'reconnected' : 'disconnected'
-                event.callback({
-                  'device':deviceName,
-                  'state':state
-                });
-            }
-        }
-        receiveNotif(deviceName,type) {
-            let event = this[__sym].receiveNotif;
-            if (event && event.callback) {
-                event.callback({
-                  'device':deviceName,
-                  'type':type
-                });
-            }
-        }
+      }
     }
     return eClass;
   })();   
   let readBuffer = [], //Current Buffer Store from Notification
-      event = new eventHandler()
+  event = new eventHandler()
   
 //Public Property ---------------------------------------------------
   
@@ -176,20 +172,20 @@
     e = (typeof e !== 'undefined') ? e : defVal
     e = (Array.isArray(e)) ? e : [e]
     return e
-  }
-
+  },
   //Connecting + Decoding + Encoding Bluetooth
-  const connect = (device) => {
+  connect = (device) => {
     const toTry = () => {
-        return device.gatt.connect()
-      },
-      success = (server) => {
-        device.addEventListener('gattserverdisconnected', onDisconnected);
-        onConnected(server)
-      },
-      fail = () => {
-        log('Connection Failed.')
-      };
+      event.connecting(device.name.trim()); 
+      return device.gatt.connect()
+    },
+    success = (server) => {
+      device.addEventListener('gattserverdisconnected', onDisconnected);
+      onConnected(server)
+    },
+    fail = () => {
+      log('Connection Failed.')
+    };
     exponentialBackoff(3,2,toTry,success,fail)
   },
   //Retry Connection on Fail
@@ -223,18 +219,18 @@
   //On Device Disconnected     
   onDisconnected = (device) => {
     let deviceName = device.target.name.trim()
-    if (a.reconnect != true){
-      log('> '+ deviceName+' disconnected');
-      let objs = ['devices','chars','status','schedule']
-      objs.forEach((e,i) => {
-        delete a[e][deviceName]
-      })
-    }else{
-      a.devices[deviceName].gatt.connect()
+    let deviceObj = a.devices[deviceName]
+    log('> '+ deviceName+' disconnected');
+    let objs = ['devices','chars','status','schedule']
+    objs.forEach((e,i) => {
+      delete a[e][deviceName]
+    })
+    event.disconnected(deviceName)
+    if (a.reconnect === true){
+      connect(deviceObj)
     }
-    return event.disconnected(deviceName)
+    return 
   },  
-
   //Setup Notification with Bulb
   getNotif = (server) => {
     return (server.getPrimaryService(DICT.service_lightnotif))
@@ -338,7 +334,6 @@
         }
         let repeat = scheduleItem.repeat = (e[7]>0) ? true : false
         let repeatCodes = (repeat === true) ? subset(Object.values(DICT.weekList),e[7]) : null
-
         scheduleItem.repeatDays = (repeat === true && repeatCodes != null) ? 
                               repeatCodes.reduce(function(arr, v) {
                                 arr.push(getKeyByValue(DICT.weekList,v))
@@ -357,13 +352,11 @@
         scheduleItem.rgb = (mode === 'rgb') ? [e[9],e[10],e[11]] : null
         scheduleItem.effect = (mode === 'effect') ? getKeyByValue(DICT['presetList'],e[8]) : null
         scheduleItem.dateTime = new Date(scheduleItem.year, scheduleItem.month, scheduleItem.day, scheduleItem.hr, scheduleItem.min, scheduleItem.sec)
-        
         if (repeat === true){
           log('Schedule #'+(i+1)+' every ['+scheduleItem.repeatDays.join(',')+']')
         }else{
           log('Schedule #'+(i+1)+' on '+scheduleItem.month+'-'+scheduleItem.day+'-'+(scheduleItem.year))
         }
-
         if (mode === 'brightness'){
           let start = Math.round(scheduleItem.start/255*100)
           let end = Math.round(scheduleItem.end/255*100)
@@ -432,10 +425,8 @@
     }
     let encodedArray = [DICT.schedule_encode_header,...fullArray,...DICT.schedule_encode_footer]
     return encodedArray
-  }
-  
-//Public Method ---------------------------------------------------
-  
+  }  
+//Public Method ---------------------------------------------------  
   //Public Event Handler
   a.on = (e,cb) => {
     event.on(e,cb)
@@ -457,7 +448,6 @@
       }]
     })
     .then(device => {
-      event.connecting(device.name.trim()); 
       log('Found ' + device.name.trim());
       log('Connecting to GATT Server...');
       connect(device)
@@ -525,8 +515,8 @@
   //Sets the RGB of Light
   a.setRGB = (e,arr) => {
     let rgb = e.split(',').map(Number),
-        deviceNames = returnArray(arr,Object.keys(a.devices)),
-        data = new Uint8Array([DICT.setColorHeader,...rgb,0,...DICT.setColorRGBFooter]);
+    deviceNames = returnArray(arr,Object.keys(a.devices)),
+    data = new Uint8Array([DICT.setColorHeader,...rgb,0,...DICT.setColorRGBFooter]);
     return deviceNames.forEach((e,i) => {
       a.chars[e].writeValue(data)
       .catch(err => log('Error when setting RGB! ', err))
@@ -545,8 +535,8 @@
   //Sets the Warm White Brightness of Light
   a.setWarmWhite = (e,arr) => {
     let intensity = e || 255, //1-255
-        deviceNames = returnArray(arr,Object.keys(a.devices)),
-        data = new Uint8Array([DICT.setColorHeader,0,0,0,intensity,...DICT.setColorWWFooter]);
+    deviceNames = returnArray(arr,Object.keys(a.devices)),
+    data = new Uint8Array([DICT.setColorHeader,0,0,0,intensity,...DICT.setColorWWFooter]);
     return deviceNames.forEach((e,i) => {
       a.chars[e].writeValue(data)
       .catch(err => log('Error when setting Warm White. ', err))
@@ -565,10 +555,10 @@
   //Sets a factory preset effect
   a.setEffect = (e,s,arr) => {
     let preset = (Object.keys(DICT.presetList).includes(e)) ? e : 'seven_color_cross_fade',
-        effect =  DICT.presetList[preset],
-        speed = s || 1, //1-20
-        deviceNames = returnArray(arr,Object.keys(a.devices)),
-        data = new Uint8Array([DICT.presetHeader,effect,speed,...DICT.presetFooter]);
+    effect =  DICT.presetList[preset],
+    speed = s || 1, //1-20
+    deviceNames = returnArray(arr,Object.keys(a.devices)),
+    data = new Uint8Array([DICT.presetHeader,effect,speed,...DICT.presetFooter]);
     return deviceNames.forEach((e,i) => {
       a.chars[e].writeValue(data)
       .catch(err => log('Error when setting effect. ', err))
@@ -584,7 +574,7 @@
       })
     })
   };
-  //Sets a Schedule - Max 6
+  //Set a Schedule - Max 6
   a.setSchedule = (arr1,arr2) => {
     if(typeof arr1 !== 'undefined'){
       let deviceNames = returnArray(arr2,Object.keys(a.devices))
@@ -603,7 +593,6 @@
       log('No schedule to set.')
     }
   };
-
 })(window.magicblue = window.magicblue || {})
 
 
