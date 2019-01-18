@@ -18,6 +18,7 @@
 
     <!-- Custom Scripts -->
     <script src="/scripts/script.js" defer></script>    
+    <script src="/scripts/listen.js" defer></script>    
   </head>  
   <body>  
     <nav>
@@ -40,12 +41,27 @@
     <container class="hidden">
     <section class="rgb">
       <label>RGB</label>
-      <div>rgb( <span contenteditable="true">null</span> )</div>
+      <div>
+        <input type="range" min="0" max="255" value="125" class="slider" id="redSlider">
+        <input type="range" min="0" max="255" value="125" class="slider" id="greenSlider">
+        <input type="range" min="0" max="255" value="125" class="slider" id="blueSlider">
+      </div>
     </section>
     <section class="warmWhite">
       <label>Warm White</label>
-      <div>brightness( <span contenteditable="true">null</span> )</div>
+      <div>
+        <input type="range" min="0" max="255" value="125" class="slider" id="whiteSlider">
+      </div>
     </section>
+    <section class="effect">
+      <label>Effects</label>
+      <div><select></select></div>
+    </section>
+    <section class="schedule">
+      <label>Schedule</label>
+      <div></div>
+    </section>
+      
     </container>
 
   </body>

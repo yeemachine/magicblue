@@ -1,5 +1,6 @@
 body {
     background: #fff;
+  position:absolute;
 }
 nav{
   display:flex;
@@ -29,6 +30,9 @@ button{
   font-size:12px;
 }
 button.selected{
+}
+.schedule>div{
+  max-width:50%;
 }
 container{
 
@@ -118,3 +122,56 @@ container section.selected{
 #on-off {
     background-color: #fff;
 }
+
+
+input[type="range"] { 
+    margin: auto;
+    -webkit-appearance: none;
+    position: relative;
+    overflow: hidden;
+    height: 40px;
+    width: 200px;
+    cursor: pointer;
+    border-radius: 0; /* iOS */
+}
+::-webkit-slider-runnable-track {
+    background: #ddd;
+}
+/*
+ * 1. Set to 0 width and remove border for a slider without a thumb
+ */
+::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 0px; /* 1 */
+    height: 40px;
+    background: #fff;
+/*     border: 2px solid #999; /* 1 */ 
+}
+#whiteSlider::-webkit-slider-thumb{
+  box-shadow: -100vw 0 0 100vw gold;
+}
+#redSlider::-webkit-slider-thumb{
+  box-shadow: -100vw 0 0 100vw red;
+}
+#greenSlider::-webkit-slider-thumb{
+  box-shadow: -100vw 0 0 100vw green;
+}
+#blueSlider::-webkit-slider-thumb{
+  box-shadow: -100vw 0 0 100vw blue;
+}
+
+
+select {
+  -webkit-appearance: none;
+  border-radius: 0;
+  padding: 10px;
+  font-size: 18px;
+  border: none;
+  background: #ddd;
+  text-transform: capitalize;
+}
+
+.schedule div span{
+  text-transform: capitalize;
+}
+
