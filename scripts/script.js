@@ -23,7 +23,7 @@ let scheduleList2 = [
 
 magicblue.init('.connect-button, button.connect-another')
 // magicblue.DEBUG = true
-magicblue.reconnect = true
+// magicblue.reconnect = true
 
 const hideAll = () => {
   document.querySelector('container').classList.add('hidden');
