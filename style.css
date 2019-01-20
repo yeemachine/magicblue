@@ -1,6 +1,7 @@
 body {
-    background: #fff;
+    background: #000;
   position:absolute;
+  color:white;
 }
 nav{
   display:flex;
@@ -12,7 +13,7 @@ nav{
   top:0;
   left:0;
   z-index:999;
-  background-color:rgb(245,245,245)
+  background-color:rgb(50,50,50)
 }
 .buttons{
 }
@@ -21,7 +22,8 @@ nav{
   flex-direction: column;
 }
 label{
-  font-size:12px
+  font-size:12px;
+  opacity:0.5
 }
 div{
     font-size:18px;
@@ -62,6 +64,9 @@ container section.selected{
 .mdl-layout__container{
   position:relative;
   margin-top: 15vh;
+}
+.mdl-button i{
+  color:white;
 }
 .app-layout {
     display: flex;

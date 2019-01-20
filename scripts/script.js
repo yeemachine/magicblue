@@ -189,7 +189,7 @@ Object.keys(magicblue.dict.presetList).forEach((e,i)=>{
   node.classList.add(e)
   document.querySelector('.effect select').appendChild(node)
 })
-document.querySelector('.effect select').addEventListener('change',()=>{
+document.querySelector('.effect select').addEventListener('input',()=>{
   magicblue.setEffect(event.target.value)
   document.querySelector('.power-button i').innerHTML = 'lightbulb'
   document.querySelectorAll('.effect, .power-button').forEach((e)=>{e.classList.add('selected')});
