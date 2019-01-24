@@ -2,7 +2,7 @@ let scheduleList = [
   {
     hr:19,
     min:23,
-    repeatDays:['monday','tuesday','wednesday','thursday','friday'],
+    repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
     mode:'brightness',
     start:0,
     end:235,
@@ -39,6 +39,8 @@ showAll = () => {
 }
 
 let loadingAnimation
+
+
 magicblue.on('connecting', (device) => {
   console.log('Connecting to '+device);
   let count = 0;
@@ -53,11 +55,17 @@ magicblue.on('connected', (device) => {
   clearInterval(loadingAnimation)
   showAll()
 });
+var user = JSON.parse(localStorage.getItem('user'));
+
 magicblue.on('disconnected', function (e) {
   console.log(e+' is disconnected.');
   document.querySelector('.devices div').innerHTML = Object.keys(magicblue.devices).join(', ')
   if(!Object.keys(magicblue.devices).length){
     hideAll()
+  }
+  var deviceClass = document.getElementsByClassName(e);
+  while(deviceClass[0]) {
+      deviceClass[0].parentNode.removeChild(deviceClass[0]);
   }
 });
 magicblue.on('receiveNotif', function (e) {
@@ -97,9 +105,6 @@ magicblue.on('receiveNotif', function (e) {
     }  
   }else if(notifType === 'schedule'){
     let container = document.querySelector('.schedule div')
-    while(container.firstChild){
-    container.removeChild(container.firstChild);
-    }
     magicblue.schedule[deviceName].forEach((e,i)=>{
       let mode = e.mode
       let repeat = e.repeat
@@ -140,7 +145,7 @@ magicblue.on('receiveNotif', function (e) {
       }
       string = string + ' at '+e.dateTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })+'.'
 
-      document.querySelector('.schedule div').insertAdjacentHTML( 'beforeend', '<div>'+string+'</div>' );
+      container.insertAdjacentHTML( 'beforeend', '<div class="'+deviceName+'">'+string+'</div>' );
       document.querySelector('.schedule').classList.add('selected');
     })  
   }
