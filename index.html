@@ -27,19 +27,19 @@
         Connect any Magic Blue Bluetooth Light Bulb
       </div>
       <div class="buttons">
-        <button onclick="listen()" class="mic-button hidden selected mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+        <button onclick="listen()" class="mic-button hide mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
           <i class="material-icons">microphone</i>
         </button>
-        <button onclick="magicblue.turnOnOff()" class="power-button hidden mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+        <button class="power-button hide mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
           <i class="material-icons">lightbulb_outline</i>
         </button>
-        <button class="connect-button selected mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
-          <i class="material-icons connect-another-icon">bluetooth</i>
+        <button class="connect-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+          <i class="material-icons">bluetooth</i>
         </button>
       </div>
     </nav>
-    <container class="hidden">
-    <section class="rgb">
+    <container>
+    <section class="rgb hide">
       <label>RGB</label>
       <div>
         <input type="range" min="0" max="255" value="125" class="slider" id="redSlider">
@@ -47,22 +47,25 @@
         <input type="range" min="0" max="255" value="125" class="slider" id="blueSlider">
       </div>
     </section>
-    <section class="warmWhite">
+    <section class="warmWhite hide">
       <label>Warm White</label>
       <div>
         <input type="range" min="0" max="255" value="125" class="slider" id="whiteSlider">
       </div>
     </section>
-    <section class="effect">
+      <section class="dimmer selected hide">
+      <label>Dimmer</label>
+      <div>
+        <input type="range" min="0" max="100" value="100" class="slider" id="dimmer">
+      </div>
+    </section>
+    <section class="effect hide">
       <label>Effects</label>
       <div><select></select></div>
     </section>
-    <section class="schedule">
-      <label>Schedule</label>
-      <div></div>
-    </section>
-      
     </container>
-
+    <section class="schedule hide">
+      <label>Schedule</label>
+    </section>
   </body>
 </html>

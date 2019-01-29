@@ -2,6 +2,7 @@ body {
     background: #000;
   position:absolute;
   color:white;
+  display:flex;
 }
 nav{
   display:flex;
@@ -21,35 +22,53 @@ nav{
   display: flex;
   flex-direction: column;
 }
+.devices>div{
+  display:flex;
+}
+.devices>div>div{
+  opacity:0.5;
+}
+.devices>div>div:hover{
+  text-decoration: underline;
+  cursor:pointer;
+}
+.devices>div>div.selected{
+  opacity:1;
+}
+.devices .divider{
+  margin:0 5px 0 0
+}
+select:hover{
+  cursor:pointer;  
+}
 label{
   font-size:12px;
-  opacity:0.5
+  opacity:0.75
 }
+
 div{
     font-size:18px;
 }
 button{
   font-size:12px;
 }
-button.selected{
-}
-.schedule>div{
-  max-width:50%;
+.schedule>ol{
+  max-width:262px;
 }
 container{
-
+  transition:0.25s
 }
 container section{
+  opacity:0.4;
   padding: 1.5vw;
-}
-container section{
-  opacity:0.4
 }
 container section.selected{
   opacity:1
 }
-.rgb{
-    margin-top: calc(56px + 3vw);
+.rgb div{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .rgb span, .warmWhite span{
   border-bottom: 1px solid;
@@ -60,6 +79,18 @@ container section.selected{
     z-index: 999;
     top: 0;
     left: 0;
+    margin-top: calc(56px + 3vw);
+  padding: 1.5vw;
+}
+.schedule ol{
+    padding: 16px 32px 16px 32px;
+    border: 1px solid;
+    margin: 0;
+    margin-bottom: 8px;
+}
+.schedule p{
+margin: 0 0 8px;
+line-height: 1.4;
 }
 .mdl-layout__container{
   position:relative;
@@ -104,43 +135,46 @@ container section.selected{
     margin-bottom: 2pc;
 }
 
-.hidden {
-    display: none;
+.hide {
+  opacity: 0!important;
+  pointer-events: none!important
 }
 
-.title-and-connect {
-    display: inherit;
-}
-
-/* .connect-another-icon {
-    top: 17px !important;
-    left: 4px !important;
-    margin-left: -10px !important;
-    position: relative !important;
-    float: right !important;
-} */
-
-/* .connect-another {
-    margin-left: 10px;
-} */
 
 #on-off {
     background-color: #fff;
 }
-
+.rgb{
+  transition:opacity 0.25s
+}
+.warmWhite{
+  transition:opacity 0.5s
+}
+.dimmer{
+  transition:opacity 0.75s
+}
+.effect{
+  transition:opacity 1s
+}
+.schedule{
+  transition:opacity 1.5s
+}
+input{
+  border: solid 1px;
+}
 
 input[type="range"] { 
-    margin: auto;
+    margin: 0;
     -webkit-appearance: none;
     position: relative;
     overflow: hidden;
     height: 40px;
-    width: 200px;
+    width: 262px;
     cursor: pointer;
     border-radius: 0; /* iOS */
 }
 ::-webkit-slider-runnable-track {
-    background: #ddd;
+    background: #000;
 }
 /*
  * 1. Set to 0 width and remove border for a slider without a thumb
@@ -164,6 +198,28 @@ input[type="range"] {
 #blueSlider::-webkit-slider-thumb{
   box-shadow: -100vw 0 0 100vw blue;
 }
+#dimmer::-webkit-slider-thumb{
+  box-shadow: -100vw 0 0 100vw white;
+}
+#whiteSlider{
+  border-color:gold;
+}
+#redSlider{
+  border-color:red;
+  border-bottom: none;
+}
+#greenSlider{
+  border-color:green;
+  border-top: none;
+  border-bottom: none;
+}
+#blueSlider{
+  border-color:blue;
+  border-top: none;
+}
+#dimmerSlider{
+  border-color:white;
+}
 
 
 select {
@@ -171,12 +227,18 @@ select {
   border-radius: 0;
   padding: 10px;
   font-size: 18px;
-  border: none;
-  background: #ddd;
+  border: 1px solid;
+  color: white;
+  background: #000;
   text-transform: capitalize;
+  width:262px;
 }
-
 .schedule div span{
   text-transform: capitalize;
 }
+container{
+    display:block;
+    margin-top: calc(56px + 3vw);
+}
+
 

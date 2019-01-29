@@ -1,4 +1,5 @@
 //MagicBlue Bluetooth LED Controller V.1.0.2
+//https://github.com/yeemachine
 (a => {
   
 //Private Property ---------------------------------------------------
@@ -23,9 +24,9 @@
     schedule_encode_header:0x23,
     schedule_encode_footer:[0x00, 0x32],
     schedule_active_header:0xf0,
-    schedule_active_footer:[0x00,0xf0],
+    schedule_active_footer:0xf0,
     schedule_inactive_header:0x0f,
-    schedule_inactive_footer:[0x00,0x0f],
+    schedule_inactive_footer:0x0f,
     weekList:{
       sunday:0x80,
       monday:0x02,
@@ -51,6 +52,10 @@
     //Set Preset
     presetHeader:0xbb,
     presetFooter:[0x44, 0x0A, 0x150722],
+    v1Presets:{
+      turnOff:0x0f,
+      turnOn:0xf0
+    },
     presetList:{
       seven_color_cross_fade:0x25,
       red_gradual_change:0x26,
@@ -245,7 +250,7 @@
       return ch.startNotifications() 
     })
     .catch(error => {
-      log('Argh! ' + error);
+      log('Notification not set ' + error);
     });
   },
   //Return Bluetooth Characteristics
@@ -283,10 +288,11 @@
       readBuffer = [...readBuffer, ...Array.from(new Uint8Array(value.buffer))]
     }
     /// Returns Timer Schedule - Finished Loading (87 bytes total)
-    if(readBuffer[0]===DICT.schedule_decode_header && readBuffer.length >= 87){
+    if(readBuffer[0]===DICT.schedule_decode_header && readBuffer.length === 87){
       log('【'+deviceName+'--SCHEDULE】')
       decodeSchedule(readBuffer,deviceName);
       event.receiveNotif(deviceName,'schedule')
+      console.log(readBuffer)
       return
     }
   },
@@ -296,16 +302,16 @@
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
     mode = deviceStatus.mode = buffer[3] === DICT.mode_sunrise ? 'sunrise'
               : (Object.values(DICT.presetList).includes(buffer[3])) ? 'effect'
-              : (buffer[9]/255  > 0) ? 'brightness' 
+              : (buffer[9]/255  > 0) ? 'white' 
               : 'rgb',
     rgb = deviceStatus.rgb = (mode === 'rgb') ? [buffer[6],buffer[7],buffer[8]] : null,
-    brightness = deviceStatus.brightness = (mode === 'brightness') ? buffer[9] : null,
+    white = deviceStatus.white = (mode === 'white') ? buffer[9] : null,
     effect = deviceStatus.effect = (mode === 'effect') ? (getKeyByValue(DICT.presetList,buffer[3])) : null,
     speed = deviceStatus.speed = (mode === 'effect') ? buffer[5] : null
     
     log('Light is '+power+'. Mode:'+mode)
-    if(mode === 'brightness'){
-      log('Brightness:'+Math.round(brightness/255*100)+'%')
+    if(mode === 'white'){
+      log('White Brightness:'+Math.round(white/255*100)+'%')
     }else if(mode === 'effect'){
       log('Effect:'+effect+', Speed:'+speed)
     }else if(mode === 'rgb'){
@@ -339,31 +345,35 @@
                                 arr.push(getKeyByValue(DICT.weekList,v))
                                 return arr
                               }, []) : null
-        
         scheduleItem.year = (repeat === false) ? e[1]+2000 : null
         scheduleItem.month = (repeat === false) ? e[2] : null
         scheduleItem.day = (repeat === false) ? e[3] : null
-        let mode = scheduleItem.mode = (e[8] === DICT.mode_sunrise || e[8] === DICT.mode_sunset) ? 'brightness'
+        let mode = scheduleItem.mode = (e[8] === DICT.mode_sunrise || e[8] === DICT.mode_sunset) ? 'white'
                                         : (e[8] === DICT.mode_rgb) ? 'rgb'
                                         : 'effect';
-        scheduleItem.start = (mode === 'brightness') ? e[10] : null
-        scheduleItem.end = (mode === 'brightness') ? e[11] : null
+        scheduleItem.start = (mode === 'white') ? e[10] : null
+        scheduleItem.end = (mode === 'white') ? e[11] : null
         scheduleItem.speed = (mode != 'rgb') ? e[9] : null
         scheduleItem.rgb = (mode === 'rgb') ? [e[9],e[10],e[11]] : null
-        scheduleItem.effect = (mode === 'effect') ? getKeyByValue(DICT['presetList'],e[8]) : null
+        scheduleItem.effect = (mode === 'effect' && getKeyByValue(DICT['presetList'],e[8])!==undefined) ? getKeyByValue(DICT['presetList'],e[8]) 
+                              : (deviceName.includes('LEDBLE') && getKeyByValue(DICT['v1Presets'],e[13])!==undefined) ? getKeyByValue(DICT['v1Presets'],e[13])
+                              : null
         scheduleItem.dateTime = new Date(scheduleItem.year, scheduleItem.month, scheduleItem.day, scheduleItem.hr, scheduleItem.min, scheduleItem.sec)
         if (repeat === true){
           log('Schedule #'+(i+1)+' every ['+scheduleItem.repeatDays.join(',')+']')
         }else{
           log('Schedule #'+(i+1)+' on '+scheduleItem.month+'-'+scheduleItem.day+'-'+(scheduleItem.year))
         }
-        if (mode === 'brightness'){
+        if (mode === 'white'){
           let start = Math.round(scheduleItem.start/255*100)
           let end = Math.round(scheduleItem.end/255*100)
           log('From '+start+'% to '+end+'% brightness in '+scheduleItem.speed+' minutes.')
         }else if(mode === 'rgb'){
           log('RGB('+scheduleItem.rgb.join(',')+')')
         }else if(mode === 'effect'){
+          if (deviceName.includes('LEDBLE')){
+            
+          }
           log('Preset Effect:'+scheduleItem.effect+' at Speed:'+scheduleItem.speed)
         }
         scheduleList = [...scheduleList,scheduleItem]
@@ -374,7 +384,7 @@
     a.schedule[deviceName] = scheduleList
   },
   //Encode Device Schedule     
-  encodeSchedule = (obj) => {
+  encodeSchedule = (obj,deviceName) => {
     let fullArray = []
     let max = 6 //6 schedule limit
     for (let i=0; i<max; i++){
@@ -401,29 +411,36 @@
           let rgb = schedule['rgb']
           actionArray = [DICT.mode_rgb, ...rgb]
         }else if(mode === 'effect'){
-          let speed = schedule['speed'], //31 to 1, 1 fastest
-              effect = DICT.presetList[schedule['effect']],
-              start = 0,
-              end = 0
-          actionArray = [effect,speed,start,end]
-        }else if(mode ==='brightness'){
+            let speed = schedule['speed'] || 0, //31 to 1, 1 fastest
+            effect = DICT.presetList[schedule['effect']] || 0,
+            start = 0,
+            end = 0
+            actionArray = [effect,speed,start,end]
+        }else if(mode ==='white'){
           let speed = schedule['speed'], //in minutes
               start = schedule['start'],
               end = schedule['end'],
               sunMode = (start < end) ? DICT.mode_sunrise : DICT.mode_sunset
           actionArray = [sunMode,speed,start,end]
         }
-
-        let activeArray = [DICT.schedule_active_header,...timerArray,...actionArray,...DICT.schedule_active_footer]
+        let activeArray = [DICT.schedule_active_header,...timerArray,...actionArray] 
+        
+        if(schedule['effect'] !=='turnOn' || schedule['effect'] !=='turnOff'){
+          activeArray = [...activeArray,0,DICT.schedule_active_footer]
+        }else{
+          let v1effect = DICT.v1presets[schedule['effect']] || 0
+          activeArray = [...activeArray,v1effect,DICT.schedule_active_footer]
+        }
         fullArray = [...fullArray,...activeArray]
       }
       //Inactive Schedules
       else{
-        const inactiveArray = [DICT.schedule_inactive_header,0,0,0,0,0,0,0,0,0,0,0,...DICT.schedule_inactive_footer]
+        const inactiveArray = [DICT.schedule_inactive_header,0,0,0,0,0,0,0,0,0,0,0,0,DICT.schedule_inactive_footer]
         fullArray = [...fullArray,...inactiveArray]
       }
     }
     let encodedArray = [DICT.schedule_encode_header,...fullArray,...DICT.schedule_encode_footer]
+    console.log(encodedArray)
     return encodedArray
   }  
 //Public Method ---------------------------------------------------  
@@ -443,9 +460,12 @@
     log('Requesting Bluetooth Device...');
     navigator.bluetooth.requestDevice({
       filters: [{
-          services: [DICT.service_lightcontrol,DICT.service_lightnotif],
-          optionalServices: ['generic_access','primary_access']
-      }]
+        namePrefix: 'LED'
+          // services: [DICT.service_lightnotif],
+          // services:[DICT.service_lightcontrol,DICT.service_lightnotif],
+      }],
+      optionalServices: [DICT.service_lightcontrol,DICT.service_lightnotif]
+      // acceptAllDevices:true
     })
     .then(device => {
       log('Found ' + device.name.trim());
@@ -504,8 +524,8 @@
   };
   //Toggles Device On/Off Based on State of First Device Added
   a.turnOnOff = (arr) => {
-    let deviceNames = returnArray(arr,Object.keys(a.devices))
-    let power = a.status[deviceNames[0]].on
+    let deviceNames = returnArray(arr,Object.keys(a.devices)),
+        power = a.status[deviceNames[0]].on
     if(power === true){
       a.turnOff(deviceNames)
     }else{
@@ -527,14 +547,14 @@
           rgb : rgb,
           speed : null,
           effect : null,
-          brightness : null
+          white : null
         }
       })
     })
   };
   //Sets the Warm White Brightness of Light
-  a.setWarmWhite = (e,arr) => {
-    let intensity = e || 255, //1-255
+  a.setWhite = (e,arr) => {
+    let intensity = (e !== undefined) ? e : 255, //0-255
     deviceNames = returnArray(arr,Object.keys(a.devices)),
     data = new Uint8Array([DICT.setColorHeader,0,0,0,intensity,...DICT.setColorWWFooter]);
     return deviceNames.forEach((e,i) => {
@@ -543,11 +563,11 @@
       .then(() => {
         a.status[e]={
           on : true,
-          mode :'brightness',
+          mode :'white',
           rgb : null,
           speed : null,
           effect : null,
-          brightness : intensity
+          white : intensity
         }
       })
     })
@@ -569,7 +589,7 @@
           rgb : null,
           speed : speed,
           effect : preset,
-          brightness : null
+          white : null
         }
       })
     })
@@ -580,7 +600,7 @@
       let deviceNames = returnArray(arr2,Object.keys(a.devices))
       return deviceNames.forEach((e,i) => {
         let schedule = returnArray(arr1,a.schedule[e])
-        let encodedSchedule = encodeSchedule(schedule)
+        let encodedSchedule = encodeSchedule(schedule,e)
         let data = new Uint8Array(encodedSchedule)
         a.chars[e].writeValue(data)
         .catch(err => log('Error when setting schedule.',err))
@@ -593,6 +613,15 @@
       log('No schedule to set.')
     }
   };
+  a.testSchedule = () => {
+    let deviceNames = Object.keys(a.devices)
+      return deviceNames.forEach((e,i) => {
+    let array = [37, 240, 0, 0, 0, 21, 0, 0, 2, 0, 0, 0, 0, 0, 240, 240, 0, 0, 0, 21, 4, 0, 254, 65, 47, 255, 161, 0, 240, 240, 0, 0, 0, 21, 4, 0, 192, 0, 0, 0, 0, 0, 15, 240, 0, 0, 0, 21, 5, 0, 4, 37, 1, 0, 0, 0, 240, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 82]
+    let data = new Uint8Array(array)
+        a.chars[e].writeValue(data)
+    })
+
+  }
 })(window.magicblue = window.magicblue || {})
 
 
