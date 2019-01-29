@@ -8,6 +8,10 @@ There are multiple versions of the **Magicblue** bulb that are floating around. 
 
 I began the project by reading [Urish's Medium post](https://medium.com/@urish/reverse-engineering-a-bluetooth-lightbulb-56580fcb7546) and later referenced [Betree's unofficial python library](https://github.com/Betree/magicblue) for more specific bluetooth commands and schedule/status formats.
 
+### Compatibility
+I haven't yet tested all Magicblue bulb versions. But V6-V10 bulbs should work. 
+V1 is still unstable, being unable to set schedule. May come back to it in the future.
+
 ## Usage
 You can view the demo [here](https://magicblue.glitch.me) or remix your own project with the button below.
 
@@ -52,7 +56,7 @@ magicblue.turnOn()
 magicblue.turnOff()
 magicblue.turnOnOff()
 magicblue.setRGB('255,0,0')
-magicblue.setWarmWhite(255)
+magicblue.setWhite(255)
 magicblue.setEffect('seven_color_stobe_flash')
 magicblue.setSchedule(scheduleList)
 magicBlue.request('status')
@@ -66,8 +70,8 @@ magicBlue.request('status')
 | DICT          | Object        | {name:<code>decimal</code>} | Returns an object containing Bluetooth Hexcodes for Magicblue Smart Bulbs as reference. |
 | devices       | Object        | {deviceName:<code>BluetoothDevice</code>} | Returns an object containing all connected devices |
 | chars         | Object        | {deviceName:<code>BluetoothRemoteGATTCharacteristic</code> }| Returns an object containing write characteristics from all connected devices |
-| status        | Object        | {deviceName:{<br>on:<code>true\|false</code>,<br>mode:<code>'brightness'\|'rgb'\|'effect'\|'sunrise'</code>,<br>rgb:<code>[r,g,b]</code>,<br>brightness:<code>0->255</code>,<br>effect:<code>'preset_effect'</code>,<br>speed:<code>1->20</code>}<br>} | Returns an object containing the status from all connected devices |
-| schedule      | Object        | {deviceName:[<br>{repeat:<code>true\|false</code>,<br>repeatDays:<code>['monday -> sunday']</code>,<br>year:<code>20XX</code>,<br>month:<code>1->12</code>,<br>day:<code>1->31</code>,<br>mode:<code>'brightness'\|'rgb'\|'effect'</code>,<br>start:<code>0->255</code>,<br>end:<code>0->255</code>,<br>speed:<code>1->120(minutes) \| 1->20(effect speed)</code>,<br>rgb:<code>[r,g,b]</code>,<br>effect:<code>'preset_effect'</code>,}<br>]} | Returns an object containing an array of schedules from all connected devices. Max 6 schedules set per device. |
+| status        | Object        | {deviceName:{<br>on:<code>true\|false</code>,<br>mode:<code>'white'\|'rgb'\|'effect'\|'sunrise'</code>,<br>rgb:<code>[r,g,b]</code>,<br>white:<code>0->255</code>,<br>effect:<code>'preset_effect'</code>,<br>speed:<code>1->20</code>}<br>} | Returns an object containing the status from all connected devices |
+| schedule      | Object        | {deviceName:[<br>{repeat:<code>true\|false</code>,<br>repeatDays:<code>['monday -> sunday']</code>,<br>year:<code>20XX</code>,<br>month:<code>1->12</code>,<br>day:<code>1->31</code>,<br>mode:<code>'white'\|'rgb'\|'effect'</code>,<br>start:<code>0->255</code>,<br>end:<code>0->255</code>,<br>speed:<code>1->120(minutes) \| 1->20(effect speed)</code>,<br>rgb:<code>[r,g,b]</code>,<br>effect:<code>'preset_effect'</code>,}<br>]} | Returns an object containing an array of schedules from all connected devices. Max 6 schedules set per device. |
 | reconnect     | Boolean       | Default:<code>false</code> | Toggle ability to auto-reconnect disconnected devices|
 | DEBUG         | Boolean       | Default:<code>false</code> | Toggle Console Logs|
 
@@ -84,7 +88,7 @@ magicBlue.request('status')
 | turnOff       | (deviceNames)| (All Connected Devices)   | Turns off selected devices. |
 | turnOnOff     | (deviceNames)| (All Connected Devices)   | Toggles ON/OFF based on state of first device in array.|
 | setRGB        | ('r,g,b', deviceNames)| (N/A, All Connected Devices) | Sets RGB color.|
-| setWarmWhite  | (intensity, deviceNames)| (255, All Connected Devices) | Sets Warm White color with desired intensity (0-255).|
+| setWhite  | (intensity, deviceNames)| (255, All Connected Devices) | Sets Warm White color with desired intensity (0-255).|
 | setEffect     | (effectName, speed, deviceNames)| ('seven_color_cross_fade', 1, All Connected Devices) | Set a preset pattern and speed (1-20).
 | setSchedule   | (newScheduleArray, deviceNames)| (oldScheduleArray, All Connected Devices) | Sets a timer schedule for each device. Can choose between single-use and repeating timers. Actions include adjusting brightness for Warm White color scheme, setting a particular RGB value, or a factory preset effect. |
 
