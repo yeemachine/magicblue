@@ -57,7 +57,7 @@ Bellow are all the different actions accepted by the 'light control' characteris
 ```js
 [0x56, r*, g*, b*, 0, 0x0f, 0xaa]
 
-*Value range: 0→255 (0x00→0xff)
+*Value range: 0-255 (0x00-0xff)
 ```
 **Set RGB**
 ```js
