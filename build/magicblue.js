@@ -298,6 +298,7 @@
   },
   // Decode Device Status
   decodeStatus = (buffer,deviceName) => { 
+    console.log(buffer)
     let deviceStatus = a.status[deviceName] = {},
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
     mode = deviceStatus.mode = buffer[3] === DICT.mode_sunrise ? 'sunrise'
@@ -307,7 +308,8 @@
     rgb = deviceStatus.rgb = (mode === 'rgb') ? [buffer[6],buffer[7],buffer[8]] : null,
     white = deviceStatus.white = (mode === 'white') ? buffer[9] : null,
     effect = deviceStatus.effect = (mode === 'effect') ? (getKeyByValue(DICT.presetList,buffer[3])) : null,
-    speed = deviceStatus.speed = (mode === 'effect') ? buffer[5] : null
+    speed = deviceStatus.speed = (mode === 'effect') ? buffer[5] : null,
+    version = deviceStatus.version = buffer[10]
     
     log('Light is '+power+'. Mode:'+mode)
     if(mode === 'white'){
@@ -426,8 +428,10 @@
         let activeArray = [DICT.schedule_active_header,...timerArray,...actionArray] 
         
         if(schedule['effect'] !=='turnOn' || schedule['effect'] !=='turnOff'){
+          //For Device Model V6-10
           activeArray = [...activeArray,0,DICT.schedule_active_footer]
         }else{
+          //For Device Model V1
           let v1effect = DICT.v1presets[schedule['effect']] || 0
           activeArray = [...activeArray,v1effect,DICT.schedule_active_footer]
         }
