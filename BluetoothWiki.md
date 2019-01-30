@@ -57,7 +57,7 @@ Bellow are all the different actions accepted by the 'light control' characteris
 ```js
 [0x56, r*, g*, b*, 0, 0x0f, 0xaa]
 
-*Value range: 0-255 (0x00-0xff)
+*Value range: 0→255 (0x00→0xff)
 ```
 **Set RGB**
 ```js
@@ -184,7 +184,7 @@ Monitor what state the bulb is currently in as well as other information.
 [0x66, deviceClass, *on/off, **effect, 0x24, ***speed, r, g, b, brightness, version, 0x99]
 
 *On = 0x23, Off = 0x24
-**Effect only reliable when talking about preset effects. Anything that isn't a preset in this slot could be inaccurate.
+**Effect only reliable when talking about preset effects.
 ***Speed range: 1-20 (0x01-0x14); 1 being the fastest, For effects
 RGB and Warm White Brightness Values range: 0-255 (0x00-0xff)
 ```
