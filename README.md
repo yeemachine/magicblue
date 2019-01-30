@@ -8,7 +8,7 @@ There are multiple versions of the **Magicblue** bulb that are floating around. 
 
 I began the project by reading [Urish's Medium post](https://medium.com/@urish/reverse-engineering-a-bluetooth-lightbulb-56580fcb7546) and later referenced [Betree's unofficial python library](https://github.com/Betree/magicblue) for more specific bluetooth commands and schedule/status formats.
 
-### Compatibility
+#### Compatibility
 I haven't yet tested all Magicblue bulb versions. But V6-V10 bulbs should work. 
 V1 is still unstable, being unable to set schedule. May come back to it in the future.
 

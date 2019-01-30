@@ -20,7 +20,7 @@ let v1_scheduleList = [
 ]
 
 magicblue.init('.connect-button')
-magicblue.DEBUG = true
+// magicblue.DEBUG = true
 // magicblue.reconnect = true
 
 const hideAll = () => {
@@ -225,14 +225,12 @@ dimmer = () => {
   deviceNames.forEach((e,i)=>{
     if(magicblue.status[e].mode === 'white'){
       let intensity = Math.round(magicblue.devices[e].white * a)
-      console.log(intensity)
       magicblue.setWhite(intensity, e)
     }
     if(magicblue.status[e].mode === 'rgb'){
       let r = magicblue.devices[e].rgb[0] * a,
           g = magicblue.devices[e].rgb[1] * a,
           b = magicblue.devices[e].rgb[2] * a
-      console.log(r)
       magicblue.setRGB([r,g,b].join(','),e)
     }
   })
