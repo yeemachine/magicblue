@@ -292,13 +292,11 @@
       log('【'+deviceName+'--SCHEDULE】')
       decodeSchedule(readBuffer,deviceName);
       event.receiveNotif(deviceName,'schedule')
-      console.log(readBuffer)
       return
     }
   },
   // Decode Device Status
   decodeStatus = (buffer,deviceName) => { 
-    console.log(buffer)
     let deviceStatus = a.status[deviceName] = {},
     power = deviceStatus.on = (buffer[2] === DICT['status_lightOn']) ? true : false,
     mode = deviceStatus.mode = buffer[3] === DICT.mode_sunrise ? 'sunrise'
@@ -444,7 +442,6 @@
       }
     }
     let encodedArray = [DICT.schedule_encode_header,...fullArray,...DICT.schedule_encode_footer]
-    console.log(encodedArray)
     return encodedArray
   }  
 //Public Method ---------------------------------------------------  
@@ -617,15 +614,6 @@
       log('No schedule to set.')
     }
   };
-  a.testSchedule = () => {
-    let deviceNames = Object.keys(a.devices)
-      return deviceNames.forEach((e,i) => {
-    let array = [37, 240, 0, 0, 0, 21, 0, 0, 2, 0, 0, 0, 0, 0, 240, 240, 0, 0, 0, 21, 4, 0, 254, 65, 47, 255, 161, 0, 240, 240, 0, 0, 0, 21, 4, 0, 192, 0, 0, 0, 0, 0, 15, 240, 0, 0, 0, 21, 5, 0, 4, 37, 1, 0, 0, 0, 240, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 82]
-    let data = new Uint8Array(array)
-        a.chars[e].writeValue(data)
-    })
-
-  }
 })(window.magicblue = window.magicblue || {})
 
 
