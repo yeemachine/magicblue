@@ -1,6 +1,6 @@
 let scheduleList = [
   {
-    hr:19,
+    hr:18,
     min:23,
     repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
     mode:'white',
@@ -19,16 +19,23 @@ let v1_scheduleList = [
   }
 ]
 
+let sliderVal = {
+  white:0,
+  red:0,
+  green:0,
+  blue:0
+};
+
 magicblue.init('.connect-button')
 // magicblue.DEBUG = true
 // magicblue.reconnect = true
 
 const hideAll = () => {
-  document.querySelectorAll('section,.power-button').forEach((e)=>{e.classList.add('hide');})
+  document.querySelectorAll('section, button').forEach((e)=>{e.classList.add('hide');})
   document.querySelector('.devices').innerHTML = '<label>Bluetooth</label><div>Connect any Magic Blue Bluetooth Light Bulb</div>'
 },
 showAll = () => {
-  document.querySelectorAll('section,.power-button').forEach((e)=>{e.classList.remove('hide');})
+  document.querySelectorAll('section, button').forEach((e)=>{e.classList.remove('hide');})
   displayDevices()
 },
 displayDevices = () => {
@@ -63,46 +70,67 @@ deviceSelect = () => {
     magicblue.devices[deviceName].selected = true
   }
   if(allSelected().length > 0){
-    document.querySelectorAll('section').forEach((e)=>{e.classList.remove('hide');})
+    document.querySelectorAll('section, button').forEach((e)=>{e.classList.remove('hide');})
     updateStatus(allSelected()[0])
     document.querySelector('.schedule').innerHTML = '<label>Schedule</label>'
     allSelected().forEach((e,i)=>{
       updateSchedule(e)
     })
   }else{
-    document.querySelectorAll('section').forEach((e)=>{e.classList.add('hide');})
+    document.querySelectorAll('section, button').forEach((e)=>{e.classList.add('hide');})
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-d-32x32.png?1550026016197')
   }
 },
 updateStatus = (deviceName) => {
   if(magicblue.status[deviceName].on === true){
-      document.querySelector('.power-button').classList.add('selected');
-      document.querySelector('.power-button i').innerHTML = 'lightbulb'
+      document.querySelector('#eye').classList.add('selected');
   }  
   if(magicblue.status[deviceName].mode === 'rgb'){
-    let rgb = magicblue.status[deviceName].rgb.join(',')
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-rgb-32x32.png?1550025990532')
     magicblue.devices[deviceName].rgb = magicblue.status[deviceName].rgb.slice(0)
-    document.querySelector('.power-button').style.backgroundColor = 'rgb('+rgb+')'
-    document.querySelector('.rgb').classList.add('selected');
-    document.querySelectorAll('.warmWhite, .effect').forEach((e)=>{e.classList.remove('selected');})
-    document.querySelector('#redSlider').value = magicblue.status[deviceName].rgb[0]
-    document.querySelector('#greenSlider').value = magicblue.status[deviceName].rgb[1]
-    document.querySelector('#blueSlider').value = magicblue.status[deviceName].rgb[2]
+    let rgb = magicblue.devices[deviceName].rgb.join(',') || magicblue.status[deviceName].rgb.join(',') 
+    document.querySelectorAll('.effect').forEach((e)=>{e.classList.remove('selected');})
+    
+    sliderVal.red = magicblue.devices[deviceName].rgb[0]
+    sliderVal.green = magicblue.devices[deviceName].rgb[1]
+    sliderVal.blue = magicblue.devices[deviceName].rgb[2]
+    sliderVal.white = 0
+    updateRadial()
+    
+  document.querySelector('#pupil-light').setAttribute('fill','rgb('+rgb+')')
   }
   if(magicblue.status[deviceName].mode === 'white'){
-    let white = magicblue.status[deviceName].white
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-w-32x32.png?1550026004701')
+    let white = magicblue.devices[deviceName].white || magicblue.status[deviceName].white
     magicblue.devices[deviceName].white = white
     let alpha = white/255
-    document.querySelector('.power-button').style.backgroundColor = 'rgba(255,215,0,'+alpha+')'
-    document.querySelector('.warmWhite').classList.add('selected');
-    document.querySelectorAll('.rgb, .effect').forEach((e)=>{e.classList.remove('selected');})
-    document.querySelector('#whiteSlider').value = white
+    document.querySelectorAll('.effect').forEach((e)=>{e.classList.remove('selected');})
+    
+    sliderVal.red = 0
+    sliderVal.green = 0
+    sliderVal.blue = 0
+    sliderVal.white = magicblue.devices[deviceName].white
+    updateRadial()
+    document.querySelector('#pupil-light').setAttribute('fill','rgb('+[255*alpha,215*alpha,0].join(',')+')')
   }
   if(magicblue.status[deviceName].mode === 'effect'){
     let effect = magicblue.status[deviceName].effect
-    document.querySelector('.effect').classList.add('selected');
     document.querySelectorAll('.warmWhite, .rgb').forEach((e)=>{e.classList.remove('selected');})
-    document.querySelector('option.'+effect).selected = true
   }
+},
+updateRadial = (clear) => {
+  let rings = ['white','red','green','blue']
+  rings.forEach((e,i)=>{
+    let ring = document.querySelector('.rings .'+e)
+    let c = ring.getAttribute('circum');
+    let sw = ring.getAttribute('stroke-width');
+    let perc = (clear === 'clear') ? 0 : sliderVal[e]/255
+    let dashLength = ((c*perc-sw)<0) ? 0 :(c*perc-sw)
+    ring.setAttribute('stroke-dasharray',dashLength+' '+c)
+    ring.setAttribute('value',sliderVal[e])
+    ring.classList.add('animate')
+    setTimeout(function(){ ring.classList.remove('animate') }, 500);
+  })
 },
 updateSchedule = (deviceName) => {
     let container = document.createElement("ol")
@@ -119,9 +147,10 @@ updateSchedule = (deviceName) => {
           if(magicblue.status[deviceName].mode === 'sunrise'){
             let white = e.end
             let alpha = white/255
-            document.querySelector('.power-button').style.backgroundColor = 'rgba(255,215,0,'+alpha+')'
-            document.querySelector('.warmWhite').classList.add('selected');
-            document.querySelector('#whiteSlider').value = white
+            magicblue.devices[deviceName].white = white
+            sliderVal.white = white
+            updateRadial()
+            document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-w-32x32.png?1550026004701')
           }  
         }else{
            string = string+' will turn off'
@@ -158,16 +187,17 @@ updateSchedule = (deviceName) => {
 toggleClick = () => {
   let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
   magicblue.turnOnOff(deviceNames)
+  
   if(event.currentTarget.classList.contains('selected')){
     event.currentTarget.classList.remove('selected')
-    if(event.currentTarget.classList.contains('power-button')){
-      document.querySelector('.power-button i').innerHTML = 'lightbulb_outline'
-    }
+    updateRadial('clear')
+    document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{e.setAttribute('d','m0,0q140,170 280,0')})
   }else{
     event.currentTarget.classList.add('selected')
-    if(event.currentTarget.classList.contains('power-button')){
-      document.querySelector('.power-button i').innerHTML = 'lightbulb'
-    }
+    updateStatus(deviceNames)
+    document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{
+      e.setAttribute('d','m10,0q130,220 260,0')
+    })
   }
 },
 allSelected = () => {
@@ -181,9 +211,9 @@ allSelected = () => {
 },
 setRGB = () => {
   let a = document.querySelector('#dimmer').value/100,
-      r = document.querySelector('#redSlider').value,
-      g = document.querySelector('#greenSlider').value,
-      b = document.querySelector('#blueSlider').value,
+      r = sliderVal.red,
+      g = sliderVal.green,
+      b = sliderVal.blue,
       dr = Math.round(r*a),
       dg = Math.round(g*a),
       db = Math.round(b*a),
@@ -193,41 +223,40 @@ setRGB = () => {
   })
   
   magicblue.setRGB([dr,dg,db].join(','),deviceNames)  
-  document.querySelector('.power-button').style.backgroundColor = 'rgb('+[dr,dg,db].join(',')+')'
-  document.querySelectorAll('.rgb, .power-button').forEach((e)=>{e.classList.add('selected')});
+  document.querySelector('#pupil-light').setAttribute('fill','rgb('+[dr,dg,db].join(',')+')')
+
+  document.querySelectorAll('.rgb, #eye').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.warmWhite, .effect').forEach((e)=>{e.classList.remove('selected');})
-  document.querySelector('.power-button i').innerHTML = 'lightbulb'
 },
 setWhite = () => {
-  document.querySelectorAll('.warmWhite, .power-button').forEach((e)=>{e.classList.add('selected')});
+  document.querySelectorAll('.warmWhite, #eye').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.rgb, .effect').forEach((e)=>{e.classList.remove('selected');})
-  document.querySelector('.power-button i').innerHTML = 'lightbulb'
   let a = document.querySelector('#dimmer').value/100,
-      intensity = event.target.value,
+      intensity = sliderVal.white,
       alpha = intensity/255 * a,
       deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
   deviceNames.forEach((e,i)=>{
     magicblue.devices[e].white = intensity
   })
-  document.querySelector('.power-button').style.backgroundColor = 'rgba(255,215,0,'+alpha+')'
+  document.querySelector('#pupil-light').setAttribute('fill','rgb('+[255*alpha,215*alpha,0].join(',')+')')
   magicblue.setWhite(Math.round(intensity*a), deviceNames)
 },
 setEffect = () => {
   let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
-  magicblue.setEffect(event.target.value, 1, deviceNames)
-  document.querySelector('.power-button i').innerHTML = 'lightbulb'
-  document.querySelectorAll('.effect, .power-button').forEach((e)=>{e.classList.add('selected')});
+  let effect = event.path[2].classList[0]
+  magicblue.setEffect(effect, 1, deviceNames)
+  document.querySelectorAll('.effect').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.warmWhite, .rgb').forEach((e)=>{e.classList.remove('selected');})
 },
 dimmer = () => {
   let a = event.target.value/100
   let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
   deviceNames.forEach((e,i)=>{
-    if(magicblue.status[e].mode === 'white'){
+    if(typeof magicblue.devices[e].white !== 'undefined'){
       let intensity = Math.round(magicblue.devices[e].white * a)
       magicblue.setWhite(intensity, e)
     }
-    if(magicblue.status[e].mode === 'rgb'){
+    if(typeof magicblue.devices[e].rgb !== 'undefined'){
       let r = magicblue.devices[e].rgb[0] * a,
           g = magicblue.devices[e].rgb[1] * a,
           b = magicblue.devices[e].rgb[2] * a
@@ -262,6 +291,7 @@ magicblue.on('disconnected', function (e) {
   if(!Object.keys(magicblue.devices).length){
     hideAll()
     document.querySelector('.connect-button i').innerHTML = 'bluetooth'
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-d-32x32.png?1550026016197')
   }else{
     displayDevices()
   }
@@ -286,15 +316,7 @@ magicblue.on('receiveNotif', function (e) {
 });
 
 //toggle on/off
-document.querySelectorAll('.power-button').forEach((e)=>{
-  e.addEventListener('click', toggleClick);
-})
-//set white
-document.querySelectorAll('.rgb input').forEach((e)=>{
-  e.addEventListener('input', setRGB);
-})
-//set white
-document.querySelector('.warmWhite input').addEventListener('input',setWhite)
+document.querySelector('#eye').addEventListener('click', toggleClick);
 //set dimmer
 document.querySelector('.dimmer input').addEventListener('input',dimmer)
 //create effect list dropdown
@@ -307,6 +329,8 @@ Object.keys(magicblue.dict.presetList).forEach((e,i)=>{
 })
 //set effect
 document.querySelector('.effect select').addEventListener('input',setEffect)
+//toggle hide effects
+document.querySelector('.effects button').addEventListener('click', ()=>{document.querySelector('.effects container').classList.toggle("hide")});
 
 
 
