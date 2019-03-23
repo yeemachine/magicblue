@@ -75,6 +75,14 @@ if(newAng<0){
 return newAng
 }      
 
+let radialCursor = (value) => {
+  let toolTip = document.createElement('div')
+  toolTip.classList.add('toolTip','radial')
+  let valueText = document.createElement('h2')
+  valueText.innerHTML = value
+  toolTip.appendChild(valueText)
+  cursor.add(toolTip)
+}
 
 
 arcs.forEach((e)=>{
@@ -139,9 +147,8 @@ function handleMouseOver() {
     j.classList.add('hover')
     let ring = document.querySelector('.rings .'+e.name)
     let value = ring.getAttribute('value') || 0
-    document.querySelector('#cursor .radialValue').innerHTML = value
+    radialCursor(value)
   })
-  document.querySelector('#cursor').classList.add('hover')  
   }
 }
 function handleMouseOut() {
@@ -150,8 +157,7 @@ function handleMouseOut() {
   document.querySelectorAll('.hover').forEach((e,i)=>{
     e.classList.remove('hover')
   })
-  document.querySelector('#cursor .radialValue').innerHTML = ''
-  document.querySelector('#cursor').classList.remove('hover')
+  cursor.clear()
   }
 }
   
@@ -167,14 +173,12 @@ function dragstarted() {
   ring.setAttribute('stroke-dasharray',dashLength+' '+c)
   ring.setAttribute('value',value)
   toggleRing(e.name)
-  document.querySelector('#cursor .radialValue').innerHTML = value
-  document.querySelector('#cursor').classList.add('hover')
-
+  radialCursor(value)
 }
 
 function dragged(d) {
   translateEye(d3.event.sourceEvent.pageX,d3.event.sourceEvent.pageY)
-  translateCursor(d3.event.sourceEvent.pageX,d3.event.sourceEvent.pageY)
+  cursor.translateCursor(d3.event.sourceEvent.pageX,d3.event.sourceEvent.pageY)
   
   let newAng = findAng(d3.event,e)
   let perc = 0
@@ -197,7 +201,7 @@ function dragged(d) {
    }else{
     setRGB()
    }
-  document.querySelector('#cursor .radialValue').innerHTML = value
+  radialCursor(value)
 }
   
 function toggleRing(selected){
@@ -240,8 +244,7 @@ function toggleRing(selected){
 
 function dragended(d) {
   document.querySelectorAll('.active').forEach((e,i)=>{e.classList.remove('active')})
-  document.querySelector('#cursor .radialValue').innerHTML = ''
-  document.querySelector('#cursor').classList.remove('hover')
+  cursor.clear()
 }
   
 })

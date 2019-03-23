@@ -1,0 +1,207 @@
+/*EYE*/
+#eye {
+  color:#fff;
+  --duration-blink: .2s;
+  --duration-lashes: .2s;
+  /* calculated and fixed vars */
+  --delay-lashes: var(--duration-blink);
+  --duration-pupil: .1s;
+  --delay-pupil: calc(var(--duration-blink)*2/3);
+  stroke-linecap: round; 
+}
+ #eye-top ,#eye-bottom, #pupil-top, #pupil-bottom, #shadowEyes .selected path{ 
+  transition: 0.15s ease-out;
+}
+#eye-pupil, #eye-white{
+  opacity: 0;
+  transition: opacity var(--duration-pupil) ;
+}
+/* open state */
+.selected #eye-top, .selected #pupil-top{
+  transform: rotateX(.5turn);
+  animation: scaleUp var(--duration-lashes) var(--delay-lashes) ease-in-out;
+}
+.selected #eye-white{
+  opacity:1
+}
+.selected #eye-pupil {
+  opacity: 1; 
+  animation: blink 4.4s infinite;
+}
+#eye.selected {
+animation: squeeze 4.4s infinite;
+}
+/* close state */
+#eye-pupil { opacity: 0; }
+/* keyfranes */
+@keyframes scaleUp {
+  50% { transform: rotateX(.5turn) scaleY(1.15); }
+  to { transform: rotateX(.5turn) scaleY(1); }
+}
+@keyframes scaleDown {
+  50% { transform: scaleY(1.15); }
+  to { transform: scaleY(1); }
+}
+@keyframes blink {
+  95% {
+    transform: none;
+    animation-timing-function: ease-in;
+  }
+  97% {
+    transform: translateY(15px) scaleY(0)
+  }
+  100% {
+    animation-timing-function: ease-out;
+  }
+}
+@keyframes squeeze {
+  95% {
+    transform: none ;
+    animation-timing-function: ease-in;
+  }
+  97% {
+    transform: translateY(3px) scaleY(0.8)
+  }
+  100% {
+    animation-timing-function: ease-out;
+  }
+}
+
+/*MAIN CONTROLS*/
+#radialControl path{
+  transform-origin:center;
+}
+.rings path{
+  pointer-events:none;
+}
+.rings path.animate{
+  transition: 0.5s;
+}
+.shadow path{
+  stroke:rgba(25,0,25,0.5)
+}
+.shadow path.hover, .shadow path.active{
+  stroke:rgba(25,0,25,1);
+  transition:stroke 0.15s;
+  cursor:pointer;
+}
+
+/*COVER ARTWORK*/
+#cover{
+  pointer-events:none
+}
+#cover.hide{
+  opacity:1;
+}
+.hide #mainEye{
+  opacity:1;
+}
+#mainEye{
+  transition: opacity 1s 1s;
+}
+#shadowEyes{
+  transition: opacity 1s;
+  transition-delay:0s;
+  opacity:0;
+}
+.hide #shadowEyes{
+  opacity:.3;
+  transition-delay:1s;
+}
+#shadowEyes .selected{
+  opacity:0.1
+}
+.hide #shadowEyes .selected.dateFilled{
+  pointer-events:all
+}
+#shadowEyes .selected.dateFilled{
+  opacity:1;
+  pointer-events:none
+}
+.squiggle{
+  transform-origin:center;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.395, 0, 0.490, 1), transform 1.25s;
+  stroke-dasharray:1550;
+}
+svg .squiggle:nth-Child(odd){
+  stroke-dashoffset:1550;
+}
+svg .squiggle:nth-Child(even){
+  stroke-dashoffset:-1750;
+}
+
+.r{
+  fill:none;stroke:#FF301F;stroke-width:30;stroke-linecap:round;stroke-miterlimit:10;
+  transform:translate(20px,-210px);
+/*   stroke-dashoffset:1550; */
+}
+.g{
+  fill:none;stroke:#2DFF57;stroke-width:30;stroke-linecap:round;stroke-miterlimit:10;
+  transform:translate(-30px,-120px);
+/*       stroke-dashoffset:1550; */
+}
+.b{
+  fill:none;stroke:#2D98FF;stroke-width:30;stroke-linecap:round;stroke-miterlimit:10;
+  transform:translate(60px,-80px);
+/*   stroke-dashoffset:1550; */
+}
+.y{
+  fill:none;stroke:#FFD700;stroke-width:30;stroke-linecap:round;stroke-miterlimit:10;
+/*   stroke-dashoffset:1550; */
+  transform:translate(8px,0);
+}
+.hide .r{
+  transform:translate(28px,-210px);
+}
+.hide .g{
+  transform:translate(-38px,-120px);
+}
+.hide .b{
+  transform:translate(68px,-80px);
+}
+.hide .y{
+  transform:translate(0,0);
+}
+
+
+svg.hide .squiggle{
+  stroke-dashoffset:-10;
+}
+
+.eye-1{
+  transform:translate(-42px,644px) scale(0.2)
+}
+.eye-2{
+  transform:translate(131px,594px) scale(0.2)
+}
+.eye-3{
+  transform: translate(303px,548px) scale(0.2)
+}
+.eye-4{
+  transform: translate(473px,500px) scale(0.2)
+}
+.eye-5{
+  transform: translate(644px,449px) scale(0.2)
+}
+.eye-6{
+  transform: translate(815px,401px) scale(0.2)
+}
+.eye-7{
+  transform: translate(985px,353px) scale(0.2)
+}
+.row-2{
+  transform: translate(-66px,88px)
+}
+.row-3{
+  transform: translate(40px,122px)
+}
+
+
+@media only screen and (max-width: 500px) {
+svg .squiggle:nth-Child(even){
+  stroke-dashoffset:1450;
+}
+svg.hide .squiggle{
+  stroke-dashoffset:0;
+}
+}

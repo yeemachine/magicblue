@@ -1,0 +1,220 @@
+.schedule{
+  width:58px;
+}
+
+.schedule .title .material-icons,.schedule .title p{
+  color:white;
+}
+.schedule .title .material-icons:hover,.schedule .title p:hover{
+  color:rgb(255,215,0);
+  cursor:pointer;
+}
+.schedule container{
+  --containerWidth:400px;
+  --containerHeight:300px;
+  --deviceMargin:16px;
+  width:var(--containerWidth);
+  height:var(--containerHeight);
+  background: rgba(25,0,25,0.8);
+  overflow-x:hidden;
+  transition:0.25s;
+  position:absolute;
+  border-radius:10px;
+  z-index:3;
+  top:0;
+  left:58px;
+}
+.schedule container.hide{
+  opacity:0;
+  pointer-events:none;
+  left:48px;
+}
+.schedule container>div{
+  width:var(--containerWidth);
+  height:var(--containerHeight);
+  left:var(--containerWidth);
+  top:0;
+  position:absolute;
+  display:block;
+  transition: left .5s;
+  overflow-y:scroll;
+  overflow-x:visible;
+/*   opacity:0; */
+}
+.schedule container>div.back{
+  left:calc(-1*var(--containerWidth));
+}
+.schedule container>div.selected{
+  left:0;
+  opacity:1
+}
+.schedule container>div.scheduleList{
+}
+.schedule container>div .deviceContainer{
+/*   width:calc(100% - var(--deviceMargin) * 2);
+  padding:0 var(--deviceMargin) 0 var(--deviceMargin); */
+  position:relative;
+  display:block;
+}
+.schedule .title p.delete:hover{
+    color:rgb(255,15,0)
+}
+.schedule .deviceContainer.delete .delete{
+  color:rgb(255,15,0)
+}
+.schedule>container>div{
+  width:calc(100% - var(--deviceMargin) * 2);
+  padding:0 var(--deviceMargin) 0 var(--deviceMargin);
+}
+
+.schedule container>div ul{
+  width:100%;
+  padding:0;
+  margin:0;
+}
+.schedule container>div ul:hover{
+  cursor:pointer;
+}
+.schedule container>div li{
+  list-style:none;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:background-color .25s;
+  width:100%;
+  margin:0 0 0 calc(-1 * var(--deviceMargin));
+  padding:0 var(--deviceMargin) 0 var(--deviceMargin);
+  border-bottom: 0.5px solid rgba(255,255,255,0.1);
+  min-height:48px;
+}
+.schedule container>div li:last-child{
+  border-bottom: 0
+}
+.schedule container>div.timer li:first-child{
+  border-top: 0.5px solid rgba(255,255,255,0.1);
+}
+.schedule container>div li:hover{
+  background:rgba(255,255,255,0.05);
+}
+.schedule container>div.white li:hover,.schedule container>div.rgb li:hover{
+  background:transparent;
+}
+.schedule container>div.white ul:hover,.schedule container>div.rgb ul:hover{
+  cursor:default
+}
+.schedule container>div li.selected{
+  background:rgba(255,255,255,0.05);
+}
+.schedule container>div li .material-icons.toggle{
+  transition:opacity 0.25s;
+  opacity:0;
+  pointer-events:none;
+}
+.schedule container>div .delete li .material-icons.toggle{
+  opacity:1;
+  pointer-events:all;
+}
+.schedule container>div .delete li .material-icons.toggle:hover{
+  color:rgb(255,15,0)
+}
+
+.schedule container>div li.off{
+  opacity:0.5
+}
+.schedule container>div div{
+  transition:opacity 0.25s;
+}
+
+.schedule container>div li>div{
+  display:block;
+  margin:var(--deviceMargin) 0 var(--deviceMargin) 0;
+}
+.schedule container>div li>div.preview{
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+}
+.schedule container>div li>div.preview p{
+  margin-right:8px;
+  display: flex;
+  align-items: center;
+}
+.schedule container>div li>div.preview p .circle{
+  border-radius:50%;width:24px;height:24px;margin-left:10px;overflow:hidden;
+  background: rgba(255,255,255,0.05);
+}
+.schedule container>div li>div.preview p .circle svg{
+transform:scale(1.75)
+}
+.schedule container>div.rgb li {
+  justify-content: flex-start;
+  margin-bottom:16px;
+  border-bottom: 0.5px solid rgba(255,255,255,0.1);
+}
+.schedule h4{
+  margin:0;
+  font-size:24px;
+  font-weight:600;
+}
+.schedule p{
+  font-size:12px;
+  margin:0 0 0 0;
+  text-transform:capitalize;
+}
+.schedule .title{
+  display:flex;
+  width:100%;
+  justify-content:space-between;
+  align-items:center;
+  margin:0 0 0 calc(-1 * var(--deviceMargin));
+  padding:calc(var(--deviceMargin) * 0.5) var(--deviceMargin) calc(var(--deviceMargin) * 0.5) var(--deviceMargin);
+  border-bottom: 0.5px solid rgba(255,255,255,0.5);
+  height:24px;
+}
+.schedule .sticky{
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  background:rgb(25,0,25);
+  z-index:3
+}
+.schedule container>div.timer{
+  display:block;
+}
+.schedule container>div li .material-icons{
+  opacity:0.1;
+  transition: opacity .25s
+}
+.schedule container>div li.selected .material-icons{
+  opacity:1
+}
+.schedule .graph{
+  margin:0 var(--deviceMagin) var(--deviceMargin) var(--deviceMargin);
+  display:block;
+}
+.schedule .title .name{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    opacity:0.5;
+}
+
+.schedule .effect container{
+  width: 100%;
+  left: 0;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background:transparent;
+  height: fit-content;
+  margin-top: 16px;
+}
+

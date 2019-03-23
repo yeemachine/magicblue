@@ -1,41 +1,71 @@
 const setAttributes = (e, attrs) => {
     Object.keys(attrs).forEach(key => e.setAttribute(key, attrs[key]));
 }
-let effects = [
+
+let effect = [
   {name:'seven_color',
    colors:['rgb(45,152,255)','rgb(45,255,87)','rgb(255,48,31)'],
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'red',
    color:'rgb(255,48,31)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'green',
    color:'rgb(45,255,87)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'blue',
    color:'rgb(45,152,255)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'yellow',
    color:'rgb(255,245,0)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'cyan',
    color:'rgb(0,245,255)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'purple',
    color:'rgb(245,0,255)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   },
   {name:'white',
    color:'rgb(255,255,255)',
-   bg:'rgba(0,0,0,0)'
+   bg:'rgba(25,0,0,0)'
   }
 ]
-effects.forEach((e,i)=>{
+
+let cursorEffect = () => {
+  let effectName = event.currentTarget.classList[0].replace(/_/g, " ")
+  let toolTip = document.createElement('div')
+  toolTip.classList.add('toolTip')
+  let effectText = document.createElement('p')
+  effectText.classList.add('effect')
+  effectText.innerHTML = effectName
+  toolTip.appendChild(effectText)
+  cursor.add(toolTip)
+}
+let selectEffect = () => {
+  document.querySelectorAll('.effect container div').forEach(e=>{e.classList.remove('selected')})
+  event.currentTarget.classList.add('selected')
+}
+let addSVG = (svgContainer) => {
+    document.querySelectorAll('.effect container').forEach(e=>{
+    let svgClone = svgContainer.cloneNode(true)
+    svgClone.addEventListener('click', selectEffect);
+    if(e.classList.contains('schedule')){
+    }else{
+      svgClone.addEventListener('click', setEffect);
+    }
+    svgClone.addEventListener('mouseover', cursorEffect)
+    svgClone.addEventListener('mouseout',()=>{cursor.clear()})
+    e.appendChild(svgClone)
+  })
+}
+
+effect.forEach((e,i)=>{
   const svgWidth = 200,
   generateGrad = (() => {
     let svgContainer = document.createElement('div'),
@@ -114,7 +144,9 @@ effects.forEach((e,i)=>{
     svg.appendChild(circle)
     svgContainer.appendChild(svg)
     svgContainer.addEventListener('click', setEffect);
-    document.querySelector('.effects container').appendChild(svgContainer)
+    svgContainer.addEventListener('mouseover', cursorEffect)
+    svgContainer.addEventListener('mouseout',()=>{})
+    addSVG(svgContainer)
   })(),
   generateStrobe = (() => {
     let svgContainer = document.createElement('div'),
@@ -122,7 +154,7 @@ effects.forEach((e,i)=>{
     defs = document.createElementNS("http://www.w3.org/2000/svg", 'defs'),
     grad = document.createElementNS("http://www.w3.org/2000/svg", 'linearGradient'),
     circle = document.createElementNS("http://www.w3.org/2000/svg", 'circle')
-    svgContainer.style.order = i + effects.length
+    svgContainer.style.order = i + effect.length
     setAttributes(svg,{
       'xmlns':'http://www.w3.org/2000/svg',
       'width':'100%',
@@ -217,7 +249,16 @@ effects.forEach((e,i)=>{
     svg.appendChild(defs)
     svg.appendChild(circle)
     svgContainer.appendChild(svg)
-    svgContainer.addEventListener('click', setEffect);
-    document.querySelector('.effects container').appendChild(svgContainer)
+    addSVG(svgContainer)
   })()
 })
+
+//toggle hide effect
+document.querySelector('.effect button').addEventListener('click', ()=>{
+  let buttonHTML = (document.querySelector('.effect container').classList.contains('hide')) ? 'close' : 'blur_on'
+  document.querySelector('.effect button').parentNode.classList.toggle("selected")
+  document.querySelector('.cover').classList.toggle("selected")
+  document.querySelector('.effect container').classList.toggle("hide")
+  document.querySelector('.effect button i').innerHTML = buttonHTML
+});
+

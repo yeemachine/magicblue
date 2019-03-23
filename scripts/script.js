@@ -1,23 +1,4 @@
-let scheduleList = [
-  {
-    hr:18,
-    min:23,
-    repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
-    mode:'white',
-    start:0,
-    end:255,
-    speed:1
-  }
-]
-let v1_scheduleList = [
-  {
-    hr:19,
-    min:23,
-    repeatDays:['monday','tuesday','wednesday','thursday','friday','saturday','sunday'],
-    mode:'effect',
-    effect:'turnOn'
-  }
-]
+
 
 let sliderVal = {
   white:0,
@@ -27,15 +8,27 @@ let sliderVal = {
 };
 
 magicblue.init('.connect-button')
-// magicblue.DEBUG = true
-// magicblue.reconnect = true
+magicblue.DEBUG = true;
+let isMobileDevice = () => {
+    return (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+};
+
+if(isMobileDevice() === true){
+  document.querySelector('nav').innerHTML = 'Sorry, this Web Bluetooth demo only works on Chrome Desktop with a compatible MagicBlue™ Bluetooth Light.'
+  document.querySelector('#eye').classList.add('selected')
+  document.querySelector('body').classList.add('mobile')
+  document.querySelector('#cursor').classList.add('mobile')
+  document.querySelector('nav').classList.add('mobile')
+}
 
 const hideAll = () => {
-  document.querySelectorAll('section, button').forEach((e)=>{e.classList.add('hide');})
-  document.querySelector('.devices').innerHTML = '<label>Bluetooth</label><div>Connect any Magic Blue Bluetooth Light Bulb</div>'
+  updateRadial('clear')
+  document.querySelectorAll('section, button, #cover').forEach((e)=>{e.classList.add('hide');})
+  document.querySelector('.devices').innerHTML = '<label>Connect Light</label><h4>An experiment with Chrome Web Bluetooth</h4>'
+  document.querySelector('#eye').classList.add('selected');
 },
 showAll = () => {
-  document.querySelectorAll('section, button').forEach((e)=>{e.classList.remove('hide');})
+  document.querySelectorAll('section, button, #cover').forEach((e)=>{e.classList.remove('hide');})
   displayDevices()
 },
 displayDevices = () => {
@@ -70,20 +63,18 @@ deviceSelect = () => {
     magicblue.devices[deviceName].selected = true
   }
   if(allSelected().length > 0){
-    document.querySelectorAll('section, button').forEach((e)=>{e.classList.remove('hide');})
+    document.querySelectorAll('section, button, #cover').forEach((e)=>{e.classList.remove('hide');})
     updateStatus(allSelected()[0])
-    document.querySelector('.schedule').innerHTML = '<label>Schedule</label>'
-    allSelected().forEach((e,i)=>{
-      updateSchedule(e)
-    })
   }else{
-    document.querySelectorAll('section, button').forEach((e)=>{e.classList.add('hide');})
+    document.querySelectorAll('section, button, #cover').forEach((e)=>{e.classList.add('hide');})
     document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-d-32x32.png?1550026016197')
   }
 },
 updateStatus = (deviceName) => {
   if(magicblue.status[deviceName].on === true){
-      document.querySelector('#eye').classList.add('selected');
+    document.querySelector('#eye').classList.add('selected');
+  }else{
+    document.querySelector('#eye').classList.remove('selected');
   }  
   if(magicblue.status[deviceName].mode === 'rgb'){
     document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-rgb-32x32.png?1550025990532')
@@ -134,7 +125,7 @@ updateRadial = (clear) => {
 },
 updateSchedule = (deviceName) => {
     let container = document.createElement("ol")
-      container.classList.add(deviceName);
+    container.classList.add(deviceName);
     magicblue.schedule[deviceName].forEach((e,i)=>{
       let mode = e.mode
       let repeat = e.repeat
@@ -181,24 +172,7 @@ updateSchedule = (deviceName) => {
       }
       container.insertAdjacentHTML( 'beforeend', '<li class="'+deviceName+'">'+string+'</li>' );
     })  
-    document.querySelector('.schedule').classList.add('selected');
-    document.querySelector('.schedule').appendChild(container)
-},
-toggleClick = () => {
-  let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
-  magicblue.turnOnOff(deviceNames)
-  
-  if(event.currentTarget.classList.contains('selected')){
-    event.currentTarget.classList.remove('selected')
-    updateRadial('clear')
-    document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{e.setAttribute('d','m0,0q140,170 280,0')})
-  }else{
-    event.currentTarget.classList.add('selected')
-    updateStatus(deviceNames)
-    document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{
-      e.setAttribute('d','m10,0q130,220 260,0')
-    })
-  }
+    // document.querySelector('.schedule').appendChild(container)
 },
 allSelected = () => {
   let devices = []
@@ -227,10 +201,13 @@ setRGB = () => {
 
   document.querySelectorAll('.rgb, #eye').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.warmWhite, .effect').forEach((e)=>{e.classList.remove('selected');})
+  document.querySelectorAll('.buttons>.effect container div').forEach(e=>{e.classList.remove('selected')})
 },
 setWhite = () => {
   document.querySelectorAll('.warmWhite, #eye').forEach((e)=>{e.classList.add('selected')});
   document.querySelectorAll('.rgb, .effect').forEach((e)=>{e.classList.remove('selected');})
+  document.querySelectorAll('.buttons>.effect container div').forEach(e=>{e.classList.remove('selected')})
+
   let a = document.querySelector('#dimmer').value/100,
       intensity = sliderVal.white,
       alpha = intensity/255 * a,
@@ -243,10 +220,8 @@ setWhite = () => {
 },
 setEffect = () => {
   let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
-  let effect = event.path[2].classList[0]
+  let effect = event.currentTarget.classList[0]
   magicblue.setEffect(effect, 1, deviceNames)
-  document.querySelectorAll('.effect').forEach((e)=>{e.classList.add('selected')});
-  document.querySelectorAll('.warmWhite, .rgb').forEach((e)=>{e.classList.remove('selected');})
 },
 dimmer = () => {
   let a = event.target.value/100
@@ -273,7 +248,7 @@ magicblue.on('connecting', (deviceName) => {
   let count = 0;
   loadingAnimation = setInterval(() => {
     count++;
-    document.querySelector('.devices label').innerHTML = 'Connecting' + new Array(count % 10).join('.');
+    document.querySelector('.devices label').innerHTML = 'Connecting' + new Array(count % 5).join('.');
   }, 500);
 });
 //Device Connected
@@ -284,6 +259,7 @@ magicblue.on('connected', (deviceName) => {
   magicblue.request('status,schedule',deviceName)
   clearInterval(loadingAnimation)
   showAll()
+  startRecord[deviceName] = new Date()
 });
 //Device Disconnected
 magicblue.on('disconnected', function (e) {
@@ -299,7 +275,11 @@ magicblue.on('disconnected', function (e) {
   while(deviceClass[0]) {
       deviceClass[0].parentNode.removeChild(deviceClass[0]);
   }
+  saveLightInfo(e)  
 });
+
+
+
 //Receive Notification from Device
 magicblue.on('receiveNotif', function (e) {
   let deviceName = e.device,
@@ -311,27 +291,11 @@ magicblue.on('receiveNotif', function (e) {
     }
   }
   if(notifType === 'schedule'){
-      updateSchedule(deviceName)
+      schedule.updateList(deviceName)
   }
 });
 
-//toggle on/off
-document.querySelector('#eye').addEventListener('click', toggleClick);
-//set dimmer
-document.querySelector('.dimmer input').addEventListener('input',dimmer)
-//create effect list dropdown
-Object.keys(magicblue.dict.presetList).forEach((e,i)=>{
-  let node = document.createElement("option")
-  node.value = e
-  node.innerHTML = e.replace(/_/g," ")
-  node.classList.add(e)
-  document.querySelector('.effect select').appendChild(node)
-})
-//set effect
-document.querySelector('.effect select').addEventListener('input',setEffect)
-//toggle hide effects
-document.querySelector('.effects button').addEventListener('click', ()=>{document.querySelector('.effects container').classList.toggle("hide")});
-
+updateShadowEyes()
 
 
 
