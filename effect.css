@@ -1,0 +1,51 @@
+.effect container.hide{
+  opacity:0;
+  pointer-events:none;
+  left:48px
+}
+.effect container{
+  position:absolute;
+  top:0px;
+  left:58px;
+  width:250px;
+  transition:0.2s;
+  display:flex;
+  flex-wrap:wrap;
+  align-content:flex-start;
+  z-index:999;
+}
+.effect container label{
+  width:100%;
+  margin:0 0 4px 0;
+}
+.effect container p{
+  margin:0;
+  padding:0;
+  width:100%;
+}
+.effect container div{
+    width:48px;
+    height:48px;
+    margin:0 10px 10px 0;
+    background: rgba(25,0,25,0.8);
+    border-radius:50%;
+    overflow:hidden;
+    left: 0;
+    position: relative;
+}
+.effect container.schedule div{
+  background: rgba(255,255,255,0.05);
+}
+.effect container div.selected,.effect container div.selected:hover{
+  border: .5px solid rgba(255,255,255,0.5);
+  box-sizing: border-box;
+}
+.effect container div:hover{
+  cursor:pointer;
+}
+.effect container div svg{
+  transition: transform 0.2s
+}
+.effect container div:hover svg{
+  transform:scale(1.75)
+}

@@ -8,56 +8,236 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- import the webpage's stylesheet -->
-    <link rel="stylesheet" href="controls.css">
+    <!-- Styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="controls.css">
+    <link rel="stylesheet" href="cursor.css">
+    <link rel="stylesheet" href="schedule.css">
+    <link rel="stylesheet" href="effect.css">
+    <link rel="stylesheet" href="svg.css">
+    <link rel="stylesheet" href="dateSelector.css">
+    <link rel="stylesheet" href="lightLog.css">
 
     <!-- Libraries -->
     <script src="build/magicblue.js" defer></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.6.0/annyang.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://d3js.org/d3.v4.min.js" defer></script>
 
-    <!-- Custom Scripts -->
+    <!-- Scripts -->
+    <script src="scripts/lightLog.js" defer></script>  
     <script src="scripts/script.js" defer></script>  
     <script src="scripts/cursor.js" defer></script>
+    <script src="scripts/graph.js" defer></script>
+    <script src="scripts/linear.js" defer></script>
+    <script src="scripts/schedule.js" defer></script>
     <script src="scripts/listen.js" defer></script>    
-    <script src="https://d3js.org/d3.v4.min.js" defer></script>
     <script src="scripts/radial.js" defer></script>
     <script src="scripts/eye.js" defer></script>
-    <script src="scripts/effects.js" defer></script>
+    <script src="scripts/effect.js" defer></script>
   </head>  
   <body> 
     <div id="cursor" class="idle">
       <svg height="100%" width="100%" viewBox="0 0 100 100">
         <circle cx="50" cy="50" r="40" stroke="#fff" stroke-width="2" fill="none" />
       </svg>
-      <div class="radialValue">
-        
+      <div class="cursorInfo hide">  
       </div>
-    
     </div>
     <nav>
        <div class="buttons">
-         <div>
+         <div class="bluetooth">
           <button class="connect-button">
             <i class="material-icons">bluetooth</i>
           </button>
            <div class="devices">
-            <label>Bluetooth</label>Connect any Magic Blue Bluetooth Light Bulb
+            <label>Connect Light</label>
+             <h4>An experiment with Chrome Web Bluetooth</h4>
             </div> 
          </div>
-        <button class="mic-button hide">
+         <div>
+          <button class="mic-button hide">
           <i class="material-icons">mic</i>
+              <ul class="voice-commands hide">
+                <li><label>Voice Commands</label></li>
+                <li><div><i class="material-icons">hearing</i><p>"Turn On"</p></div><p>Turn on bulb.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Turn Off"</p></div><p>Turn off bulb.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Warm White"</p></div><p>Set color to a warm white.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Red"</p></div><p>Set color to a bright red.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Green"</p></div><p>Set color to a vibrant green.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Blue"</p></div><p>Set color to a cool blue.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Disconnect"</p></div><p>Disconnect from light bulb.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Set Schedule"</p></div><p>Adds a preset lighting schedule.</p></li>
+                <li><div><i class="material-icons">hearing</i><p>"Remove Schedule"</p></div><p>Removes all lighting shedules.</p></li>
+              </ul>
         </button>
-         <div class="effects">
-          <button class="effects hide">
+         </div>
+         <div class="effect">
+          <button class="effect hide">
             <i class="material-icons">blur_on</i>
           </button>
            <container class="hide">
            </container>
          </div>
-  
+         <div class="schedule">
+          <button class="schedule hide">
+            <i class="material-icons">alarm</i>
+          </button>
+           <container class="hide">
+             <div class="scheduleList selected"></div>
+             <div class="timer ">
+               <div class="title sticky">
+                 <p class="cancel">Cancel</p>
+                 <p class="name">Add Schedule</p>
+                 <p class="save">Save</p>
+               </div>
+               <div class="picker"></div>
+               <ul>
+                 <li class="repeat">
+                   <label>Repeat</label>
+                   <div class="preview">
+                    <p>Never</p>
+                   </div>
+                 </li>
+                  <li class="actions">
+                   <label>Action</label>
+                   <div class="preview">
+                    <p>Turn On: 0% → 100%, 1m</p>
+                   </div>
+                 </li>
+               </ul> 
+             </div>
+             <div class="repeat ">
+               <div class="title sticky">
+                 <i class="material-icons">chevron_left</i>
+                 <p class="name">Repeat</p>
+                 <p></p>
+               </div>
+               <ul>
+                 <li class="sunday" value="sunday"><p>Sunday</p><i class="material-icons">check</i></li>
+                 <li class="monday" value="monday"><p>Monday</p><i class="material-icons">check</i></li>
+                 <li class="tuesday" value="tuesday"><p>Tuesday</p><i class="material-icons">check</i></li>
+                 <li class="wednesday" value="wednesday"><p>Wednesday</p><i class="material-icons">check</i></li>
+                 <li class="thursday" value="thursday"><p>Thursday</p><i class="material-icons">check</i></li>
+                 <li class="friday" value="friday"><p>Friday</p><i class="material-icons">check</i></li>
+                 <li class="saturday" value="saturday"><p>Saturday</p><i class="material-icons">check</i></li>
+               </ul>
+             </div>
+             <div class="actions">
+               <div class="title sticky">
+                 <i class="material-icons">chevron_left</i>
+                 <p class="name">Edit Actions</p>
+                 <p></p>
+               </div>
+               <ul>
+                 <li class="white"><p>Turn On/Off</p><i class="material-icons">check</i></li>
+                 <li class="rgb"><p>Set RGB</p><i class="material-icons">check</i></li>
+                 <li class="effect"><p>Set Strobe/Fade Effect</p><i class="material-icons">check</i></li>
+               </ul>
+             </div>
+             <div class="white">
+                <div class="title">
+                 <i class="material-icons">chevron_left</i>
+                 <p class="name">Turn On/Off</p>
+                 <p class="save">Done</p>
+                </div>
+               <div class="graph">
+           
+                 <ul>
+                   <li class="white">
+                      <label>Brightness</label>
+                     <p>100% → 0%</p>
+                   </li>
+                   <li class="speed">
+                      <label>Duration</label>
+                     <p>3 minutes</p>
+                   </li>
+                 </ul>
+                 
+                 <svg class="startEnd">
+                  <defs>
+                  <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(255,215,0);stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:rgb(255,215,0);stop-opacity:1" />
+                  </linearGradient>
+                  </defs>
+                  <style>
+                    .startEnd{overflow:visible;}
+                  </style>
+                </svg>
+               </div>    
+             </div>
+             <div class="rgb ">
+               <div class="title">
+                 <i class="material-icons">chevron_left</i>
+                 <p class="name">RGB</p>
+                 <p class="save">Done</p>
+                </div>
+                 <ul>
+                   <li>
+                      <div class="circle" style="border-radius:50%;width:24px;height:24px;background-color:rgb(127,127,127);margin-right:10px;"></div>
+                     <p>RGB(127,127,127)</p>
+                   </li>
+                 </ul>
+                <svg class="rgbSlider" viewBox="0 0 255 80">
+                  <style>
+                    .shadowRect{
+                      opacity:0.1
+                    }
+                    .greenLine{
+                      transform:translate(0px, 30px)
+                    }
+                    .blueLine{
+                      transform:translate(0px, 60px)
+                    }
+                  </style>
+                  <defs>
+                  <linearGradient id="redLinear" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(255,48,31);stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:rgb(255,48,31);stop-opacity:1" />
+                  </linearGradient>
+                  <linearGradient id="greenLinear" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(45,255,87);stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:rgb(45,255,87);stop-opacity:1" />
+                  </linearGradient>
+                  <linearGradient id="blueLinear" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(45,152,255);stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:rgb(45,152,255);stop-opacity:1" />
+                  </linearGradient>
+                  <linearGradient id="shadowLinear" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:rgb(255,255,255);stop-opacity:0.1" />
+                    <stop offset="100%" style="stop-color:rgb(255,255,255);stop-opacity:1" />
+                  </linearGradient>
+                  </defs>
+                  <g class="redLine"></g>
+                  <g class="greenLine"></g>
+                  <g class="blueLine"></g>
+                </svg>
+             </div>
+             <div class="effect">
+               <div class="title">
+                 <i class="material-icons">chevron_left</i>
+                 <p class="name">Strobe/Fade Effects</p>
+                 <p class="save">Done</p>
+                </div>
+                <container class="schedule">
+                </container>
+             </div>
+           </container>
+         </div>
+         <section class="cover initial selected">
+              <p>This site is a demo for Magicblue.js, a Web Bluetooth library for lightbulbs using MagicBlue™ technology. It brings the standard RGBW color controls, strobe and fade effects, and scheduled lighting options to desktops that support Web Bluetooth.</p>
+           <p>
+             Click to Enter
+           </p>
+         </section>
       </div>   
     </nav>
+    <a class="github" href="https://github.com/yeemachine/magicblue" target="blank">
+      <button class="info">
+        <i class="material-icons">info</i>
+      </button>
+    </a>
     <container>
       <section class="dimmer selected hide">
       <label>Dimmer</label>
@@ -65,14 +245,7 @@
         <input type="range" min="0" max="100" value="100" class="slider" id="dimmer">
       </div>
     </section>
-    <section class="effect hide">
-      <label>Effects</label>
-      <div><select></select></div>
-    </section>
     </container>
-    <section class="schedule hide">
-      <label>Schedule</label>
-    </section>
     <section id="mainControls" class="hide">
       <div class="eyeContainer">
         <svg 
@@ -81,117 +254,11 @@
           viewBox="0 -200 280 400"
           xmlns="http://www.w3.org/2000/svg"
           xmlns:xlink="http://www.w3.org/1999/xlink">
-          <style>
-            #eye {
-              color:#fff;
-              --duration-blink: .2s;
-              --duration-lashes: .2s;
-              /* calculated and fixed vars */
-              --delay-lashes: var(--duration-blink);
-              --duration-pupil: .1s;
-              --delay-pupil: calc(var(--duration-blink)*2/3);
-              stroke-linecap: round; 
-            }
-            #eye:hover{
-            }
-             #eye-top ,#eye-bottom, #pupil-top, #pupil-bottom { 
-              transition: var(--duration-blink) ease-in;
-            }
-            #eye-pupil, #eye-white{
-              opacity: 0;
-              transition: opacity var(--duration-pupil) var(--delay-pupil) ease;
-            }
-            /* open state */
-            .selected #eye-top, .selected #pupil-top{
-              transform: rotateX(.5turn);
-              animation: scaleUp var(--duration-lashes) var(--delay-lashes) ease-in-out;
-            }
-            .selected #eye-white{
-              opacity:1
-            }
-            .selected #eye-pupil {
-              opacity: 1; 
-              animation: blink 4.4s infinite;
-            }
-            #eye.selected {
-            animation: squeeze 4.4s infinite;
-            }
-            /* close state */
-            #eye-pupil { opacity: 0; }
-            /* keyfranes */
-            @keyframes scaleUp {
-              50% { transform: rotateX(.5turn) scaleY(1.15); }
-              to { transform: rotateX(.5turn) scaleY(1); }
-            }
-            @keyframes scaleDown {
-              50% { transform: scaleY(1.15); }
-              to { transform: scaleY(1); }
-            }
-            @keyframes blink {
-              95% {
-                transform: none;
-                animation-timing-function: ease-in;
-              }
-              97% {
-                transform: translateY(15px) scaleY(0)
-              }
-              100% {
-                animation-timing-function: ease-out;
-              }
-            }
-            @keyframes squeeze {
-              95% {
-                transform: none ;
-                animation-timing-function: ease-in;
-              }
-              97% {
-                transform: translateY(3px) scaleY(0.8)
-              }
-              100% {
-                animation-timing-function: ease-out;
-              }
-            }
-          </style>
-          <g id="eye" stroke-width="15" fill="none">
-            <g id="eye-white">
-              <path id="pupil-bottom" d="m0,0q140,170 280,0" fill="currentColor"/>
-              <path id="pupil-top" d="m0,0q140,170 280,0" fill="currentColor" />
-            </g>
-            <g id="eye-outline">
-              <path id="eye-bottom" d="m0,0q140,170 280,0" stroke="currentColor"/>
-              <path id="eye-top" d="m0,0q140,170 280,0" stroke="currentColor" />
-            </g>
-            <g id="pupil-container">
-              <g id="eye-pupil">
-                <circle id="pupil-outer" cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
-                <circle id="pupil-center" cx="140" cy="0" r="40" fill="#000" stroke="none" />
-                <circle id="pupil-light" cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
-              </g>
-            </g>
-          </g>
         </svg>
       </div>
       <svg id="radialControl" xmlns="http://www.w3.org/2000/svg" version="1.1" width="100%" height="100%" viewBox="-10 -10 220 220">
         <style>
-          #radialControl path{
-            transform-origin:center;
-          }
-          #radialControl :hover{
-          }
-          .rings path{
-            pointer-events:none;
-          }
-          .rings path.animate{
-            transition: 0.5s
-          }
-          .shadow path{
-            opacity:0.05;
-            stroke:#fff
-          }
-          .shadow path.hover, .shadow path.active{
-            opacity:0.1;
-            transition:0.15s
-          }
+
         </style>
         <defs>
           <g class="gradientMap">
@@ -224,10 +291,406 @@
         <g class="shadow">
         </g>
         <g class="rings">
-        </g>
-        
+        </g>       
       </svg>
     </section>
-  </body>
+  <svg version="1.1" id="cover" class="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+       x="0px" 
+       y="0px"
+       viewBox="0 0 1000 1000" 
+       style="width:100vw;height:100vh;position:absolute;top:0;left:0;z-index:2" 
+       xml:space="preserve" 
+       preserveAspectRatio="xMidYMid slice">
+    <g style="transform-origin:center;transform:rotate(0deg) translate(0px,50px);pointer-events:none;">
+    <path class="squiggle r" d="M-225.8,795.9c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.6-72.4C-12.4,734.9,1.3,783,44,770.8
+    c42.7-12.2,29-60.3,71.6-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    s29-60.3,71.7-72.4"/>
+    <path class="squiggle g" d="M-225.8,795.9c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.6-72.4C-12.4,734.9,1.3,783,44,770.8
+    c42.7-12.2,29-60.3,71.6-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    s29-60.3,71.7-72.4"/>
+    <path class="squiggle b" d="M-225.8,795.9c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.6-72.4C-12.4,734.9,1.3,783,44,770.8
+    c42.7-12.2,29-60.3,71.6-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    s29-60.3,71.7-72.4"/>
+    <path class="squiggle y" d="M-225.8,795.9c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.6-72.4C-12.4,734.9,1.3,783,44,770.8
+    c42.7-12.2,29-60.3,71.6-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7c42.7-12.2,29-60.3,71.7-72.4c42.7-12.2,56.4,35.9,99.1,23.7
+    s29-60.3,71.7-72.4"/>
+    </g>
+    <g id="mainEye" class="eye-4">
+      <g id="eye" class="selected" stroke-width="15" fill="none">
+        <g id="eye-white">
+          <path id="pupil-bottom" d="m0,0q140,170 280,0" fill="currentColor"/>
+          <path id="pupil-top" d="m0,0q140,170 280,0" fill="currentColor" />
+        </g>
+        <g id="eye-outline">
+          <path id="eye-bottom" d="m0,0q140,170 280,0" stroke="currentColor"/>
+          <path id="eye-top" d="m0,0q140,170 280,0" stroke="currentColor" />
+        </g>
+        <g id="pupil-container">
+          <g id="eye-pupil">
+            <circle id="pupil-outer" cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+            <circle id="pupil-center" cx="140" cy="0" r="40" fill="#000" stroke="none" />
+            <circle id="pupil-light" cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+          </g>
+        </g>
+      </g>
+    </g>
+    <g id="shadowEyes" style="pointer-events:none;">
+      <g class="row-1">
+        <g class="selected eye-1" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-2" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+         <g class="selected eye-3" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+         <g class="selected eye-5" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-6" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-7" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+      </g>
+      <g class="row-2">
+        <g class="selected eye-1" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-2" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+         <g class="selected eye-3" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-4" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+         <g class="selected eye-5" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-6" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-7" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+      </g>
+      <g class="row-3">
+        <g class="selected eye-1" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-2" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+         <g class="selected eye-3" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-4" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+         <g class="selected eye-5" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-6" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+        <g class="selected eye-7" stroke-width="15" fill="none">
+          <g>
+            <path d="m0,0q140,170 280,0" fill="currentColor"/>
+            <path d="m0,0q140,170 280,0" fill="currentColor" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" />
+            <path d="m0,0q140,170 280,0" stroke="currentColor" stroke-linecap="round" style="transform: rotateX(.5turn);"/>
+          </g>
+          <g>
+            <g>
+              <circle cx="140" cy="0" r="80" fill="#000" opacity="0.85" stroke="none" />
+              <circle cx="140" cy="0" r="40" fill="#000" stroke="none" />
+              <circle cx="180" cy="-30" r="25" fill="#fff" stroke="none" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+</body>
 
 </html>

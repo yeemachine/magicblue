@@ -14,30 +14,52 @@ const translateEye = (pageX,pageY) => {
   light.setAttribute('transform','translate('+mouseX*-4+','+mouseY*-4+')')
 }
 (()=>{
-const toggleClass = ()=> {
-  event.currentTarget.classList.toggle('selected');
-},
- mouseCapture = (e) => {
+let powerCursor = (value) => {
+  let toolTip = document.createElement('div')
+  toolTip.classList.add('toolTip')
+  let valueText = document.createElement('h2')
+  valueText.innerHTML = value
+  toolTip.appendChild(valueText)
+  cursor.add(toolTip)
+}
+const mouseCapture = (e) => {
   translateEye(e.pageX,e.pageY)
 },
+toggleClick = () => {
+  let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
+  magicblue.turnOnOff(deviceNames)
+  if(document.querySelector('#eye').classList.contains('selected')){
+    document.querySelector('#eye').classList.remove('selected')
+    document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{e.setAttribute('d','m0,0q140,170 280,0')})
+  }else{
+    updateStatus(deviceNames)
+    document.querySelector('#eye').classList.add('selected')
+    document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{
+      e.setAttribute('d','m10,0q130,220 260,0')
+    })
+  }
+},
 hoverInEye = () => {
-if(event.currentTarget.classList.contains('selected')){
+if(document.querySelector('#eye').classList.contains('selected')){
   document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{
     e.setAttribute('d','m10,0q130,220 260,0')
   })
-  document.querySelector('#cursor .radialValue').innerHTML = 'OFF'
+  powerCursor('ON')
 }else{
-  document.querySelector('#cursor .radialValue').innerHTML = 'ON'
+  powerCursor('Off')
 }
-document.querySelector('#cursor').classList.add('hover')  
 },
 hoverOutEye = () => {
   document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{e.setAttribute('d','m0,0q140,170 280,0')})
-  document.querySelector('#cursor .radialValue').innerHTML = ''
-  document.querySelector('#cursor').classList.remove('hover')
-
+  cursor.clear()
 }
 document.addEventListener('mousemove',mouseCapture)
-document.querySelector('#eye').addEventListener('mouseover', hoverInEye);
-document.querySelector('#eye').addEventListener('mouseleave', hoverOutEye);
+document.querySelector('.eyeContainer').addEventListener('mouseover', hoverInEye);
+document.querySelector('.eyeContainer').addEventListener('mouseleave', hoverOutEye);
+//toggle on/off
+document.querySelector('.eyeContainer').addEventListener('click', toggleClick);  
+  
+
 })()
+
+

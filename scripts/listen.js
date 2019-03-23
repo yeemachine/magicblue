@@ -11,21 +11,6 @@ blue = () => {
 warmWhite = () => {
   magicblue.setWhite(255)
 },
-birthday = () => {
-  magicblue.setWhite(200) 
-  setTimeout(function(){
-    magicblue.setRGB('255,0,0') 
-  }, 500);
-  setTimeout(function(){
-    magicblue.setRGB('0,255,0')  
-  }, 1000);
-   setTimeout(function(){
-    magicblue.setRGB('0,0,255')  
-  }, 1500);
-   setTimeout(function(){
-    magicblue.setWhite(255) 
-  }, 2000);
-}
 turnOn = () => {
   magicblue.turnOn()
 },
@@ -57,16 +42,24 @@ listen = () => {
 	});
 }
 
-document.querySelector('.mic-button').addEventListener('click', listen);
+document.querySelector('.mic-button').addEventListener('click', ()=>{
+  if(event.currentTarget.classList.contains('selected')){
+      event.currentTarget.classList.remove('selected')
+      annyang.abort();
+  }else{
+      event.currentTarget.classList.add('selected')
+    	annyang.start({
+        continuous: true
+      });
+  }
+});
 
 // Voice commands
 annyang.addCommands({
 	'red': red,
 	'green': green,
 	'blue': blue,
-  'happy birthday': birthday,
-  'warm white :intensity': warmWhite,
-  'white': warmWhite,
+  'warm white': warmWhite,
 	'turn on': turnOn,
 	'turn off': turnOff,
   'disconnect':disconnect,

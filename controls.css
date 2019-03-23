@@ -1,52 +1,53 @@
-body {
-  background: #222;
-  position:absolute;
+@keyframes colorBG {
+  0% {
+   background-color: rgb(40,40,40);
+  }
+  100%{
+   background-color: rgb(50,25,50);
+  }
+}
+@keyframes appear {
+  0% {
+   opacity: 0;
+  }
+  100%{
+  opacity: 1;
+  }
+}
+body{
+  background: rgb(40,40,40);
+  animation: colorBG 1s ease-in .5s;
+  animation-fill-mode:forwards;
+  position:relative;
+  top:0;
+  left:0;
   margin:0;
   width:100vw;
   height:100vh;
+  padding:0;
   overflow:hidden;
   color:white;
   display:flex;
   justify-content:center;
   align-items:center;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  cursor:none;
+/*   cursor:none; */
+}
+a{
+  text-decoration:none;
 }
 
-#cursor{
-  --cursorSize:30px;
-  position:absolute;
-  width:var(--cursorSize);
-  height:var(--cursorSize);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-  pointer-events:none;
-  color:#fff;
-  font-size:48px;
-}
-#cursor svg{
-  position:absolute;
-  top:0;left:0;right:0;bottom:0;
-  margin:auto;
-  z-index:-1
-}
-#cursor.idle{opacity:0}
-#cursor.hover circle{
-/*   stroke:none; */
-}
-.radialValue{
-  margin-top:-80px;
-  font-weight:900;
-}
 .hide {
-  opacity: 0;
+  opacity: 0.2;
   pointer-events: none
 }
 /*Temporary Hide*/
-.schedule,.dimmer,.effect{
+.dimmer{
   display:none;
+}
+h4{
+  margin: 0 0 0 0;
+  font-weight:400
 }
 label{
   font-size:12px;
@@ -62,91 +63,169 @@ nav{
   top:0;
   left:0;
   z-index:998;
+  opacity:0;
+  animation:appear 1s 1s forwards;
+}
+.bluetooth{
+  opacity:0
+}
+.bluetooth.appear{
+  animation:appear 1s 1s forwards;
+}
+.voice-commands{
+  position:absolute;
+  width: 400px;
+  left: 58px;
+  background: rgb(25,0,25,0.8);
+  pointer-events:none;
+  color:white;
+  margin-top:0;
+  border-radius:10px;
+  top:0;
+  padding:0;
+  transition:.25s;
+}
+.voice-commands .material-icons{
+  margin-right:8px;
+}
+.voice-commands li{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:0.5px solid rgba(255,255,255,0.1);
+  padding:0 16px 0 16px
+}
+.voice-commands li:first-child{
+  justify-content:center;
+  padding-top:8px;
+  padding-bottom:8px;
+  border-bottom:0.5px solid rgba(255,255,255,0.5);
+}
+.voice-commands li:last-child{
+  border-bottom:0
+}
+.voice-commands li div{
+  display:flex;
+  align-items:center;
+}
+.voice-commands.hide{
+  opacity:0;
+  left: 48px;
+}
+.mic-button.selected, .mic-button.selected:hover{
+  background:white;
+  color:rgb(255,48,31)
 }
 .buttons{
  margin-right:1.5vw; 
   display:flex;
   flex-direction:column;
 }
+.buttons .cover{
+  position:fixed;
+  background:rgba(50,20,50,0.8);
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  z-index:-1;
+  opacity:0;
+  transition:opacity 0.15s;
+  pointer-events:none;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.buttons .cover.selected{
+  z-index:1;
+  opacity:1;
+  pointer-events:all;
+}
+.cover p {
+    width: 70vw;
+    max-width: 550px;
+    height: fit-content;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 300;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    margin-top:8vh;
+}
+.cover p:last-child{
+  margin-top:0;
+  width:fit-content;
+  font-size:16px;
+}
+.cover.initial p{
+  opacity:1;
+}
+.buttons div.selected{
+  z-index:2
+}
 .buttons div{
   position:relative;
   display:flex;
 }
-.effects container.hide{
+
+.info{
+  position:fixed;
+  bottom:8px;
+  right:0;
+  width:48px;
+  height:48px;
   opacity:0;
-  pointer-events:none;
-  left:calc(40px + 1.5vw);
+  pointer-events: all !important;
 }
-.effects container{
-  position:absolute;
-  top:0px;
-  left:calc(48px + 1.5vw);
-  width:20vw;
-  transition:0.2s;
-  display:flex;
-  flex-wrap:wrap;
-  align-content:flex-start;
+.info.appear{
+  animation:appear 1s 1s forwards !important;
 }
-.effects container label{
-  width:100%;
-  margin:0 0 4px 0;
-}
-.effects container p{
-  margin:0;
-  padding:0;
-  width:100%;
-}
-.effects container div{
-    width:48px;
-    height:48px;
-    margin:0 8px 8px 0;
-    background: rgba(255,255,255,0.05);
-    border-radius:50%;
-    overflow:hidden;
-}
-.effects container div:hover{
-    background: rgba(0,0,0,0.15);
-}
-.effects container div svg{
-  transition: transform 0.2s
-}
-.effects container div:hover svg{
-  transform:scale(1.75)
-}
+
+
+
 button.connect-button{
-  opacity:1;
+  opacity:1 !important;
   pointer-events:all
 }
 button{
     font-size: 12px;
-    margin: 0 0 15px 0;
     width: 48px;
     height: 48px;
     padding:0;
-    margin: 0 1.5vw 8px 0;
+    margin: 0 10px 8px 0;
     border: none;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255,255,255,0.2);
+    background: rgba(25,0,25,0.8);
     color: #fff;
     transition:0.2s;
-    cursor:none;
+}
+.selected button{
+  background:white;
+  color:#222;
 }
 button:hover{
   background: rgba(255,255,255,1);
   color: #222;
-  cursor:none;
+  cursor:pointer;
 }
 button i{
   margin: 2px 0 0 0;
 }
 button:focus {outline:0;}
+button.hide{
+  opacity:0;
+}
 .devices{
   display: flex;
   flex-direction: column;
   margin:8px 0 0 0;
+  z-index:0;
 }
 .devices>div{
   display:flex;
@@ -172,6 +251,11 @@ button:focus {outline:0;}
   width:var(--maxHeight);
   height:var(--maxHeight);
   position: relative;
+  opacity:1;
+  transition: opacity 1s;
+}
+#mainControls.hide{
+  opacity:0;
 }
 .eyeContainer{
   position:absolute;
@@ -181,10 +265,29 @@ button:focus {outline:0;}
   height:calc(var(--maxHeight)*0.2);
   padding:calc(var(--maxHeight)*0.03125);
   border-radius:50%;
-  background-color:rgba(255,255,255,0.05);
+  background-color:rgba(25,0,25,0.5);
 }
-
-@media only screen and (max-width: 800px) {
+.eyeContainer:hover{
+  background-color:rgba(25,0,25,1);
+  transition:background-color .15s;
+  cursor:pointer;
+}
+@media only screen and (max-width: 500px) {
+  html,body.mobile{
+    height:85vh;
+    overflow:hidden;
+    position: relative;
+  }
+  #cursor.mobile{
+    display:none;
+  }
+  
+  nav.mobile{
+    width:calc(100vw - 32px);
+    top:unset;
+    top:16px;
+    left:16px
+  }
   #mainControls{
   width:var(--controlWidth);
   height:var(--controlWidth);
@@ -193,5 +296,8 @@ button:focus {outline:0;}
   width:calc(var(--controlWidth)*0.2);
   height:calc(var(--controlWidth)*0.2);
   padding:calc(var(--controlWidth)*0.03125);
+  }
+  #cover{
+    margin-top:-10vh;
   }
 }
