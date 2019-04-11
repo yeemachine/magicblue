@@ -75,11 +75,11 @@ if(newAng<0){
 return newAng
 }      
 
-let radialCursor = (value) => {
+let radialCursor = (value,name) => {
   let toolTip = document.createElement('div')
   toolTip.classList.add('toolTip','radial')
   let valueText = document.createElement('h2')
-  valueText.innerHTML = value
+  valueText.innerHTML = name + ':' +value
   toolTip.appendChild(valueText)
   cursor.add(toolTip)
 }
@@ -147,7 +147,7 @@ function handleMouseOver() {
     j.classList.add('hover')
     let ring = document.querySelector('.rings .'+e.name)
     let value = ring.getAttribute('value') || 0
-    radialCursor(value)
+    radialCursor(value,e.name)
   })
   }
 }
@@ -173,7 +173,7 @@ function dragstarted() {
   ring.setAttribute('stroke-dasharray',dashLength+' '+c)
   ring.setAttribute('value',value)
   toggleRing(e.name)
-  radialCursor(value)
+  radialCursor(value,e.name)
 }
 
 function dragged(d) {
@@ -201,7 +201,7 @@ function dragged(d) {
    }else{
     setRGB()
    }
-  radialCursor(value)
+  radialCursor(value, e.name)
 }
   
 function toggleRing(selected){
