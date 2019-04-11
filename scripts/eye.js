@@ -44,9 +44,9 @@ if(document.querySelector('#eye').classList.contains('selected')){
   document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{
     e.setAttribute('d','m10,0q130,220 260,0')
   })
-  powerCursor('ON')
+  powerCursor('Turn Off')
 }else{
-  powerCursor('Off')
+  powerCursor('Turn On')
 }
 },
 hoverOutEye = () => {
