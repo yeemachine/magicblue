@@ -79,8 +79,10 @@ let radialCursor = (value,name) => {
   let toolTip = document.createElement('div')
   toolTip.classList.add('toolTip','radial')
   let valueText = document.createElement('h2')
-  valueText.innerHTML = name + ':' +value
-  toolTip.appendChild(valueText)
+  let label = document.createElement('LABEL')
+  valueText.innerHTML = value
+  label.innerHTML = name
+  toolTip.append(label,valueText)
   cursor.add(toolTip)
 }
 
