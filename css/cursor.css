@@ -10,7 +10,6 @@
   pointer-events:none;
   color:#fff;
   font-size:48px;
-  
 }
 #cursor svg{
   position:absolute;
@@ -45,6 +44,15 @@
   margin:0;
   padding:0;
   text-transform:capitalize;
+}
+.cursorInfo .toolTip.radial{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+.toolTip.radial label{
+  text-transform:capitalize
 }
 
 .cursorInfo .toolTip{
