@@ -39,10 +39,10 @@ let updateShadowEyes = () => {
       e.addEventListener('mouseover',()=>{
         let toolTip = document.createElement('div')
         toolTip.classList.add('toolTip')
-        let date = Object.keys(lightLog)[i]
+        let date = Object.keys(lightLog)[Object.keys(lightLog).length-i]
         let dateText = document.createElement('p')
         dateText.classList.add('title')
-        dateText.innerHTML = '<span>Connections on </span>'+date 
+        dateText.innerHTML = '<span>Light Usage on </span>'+date 
         let deviceList = document.createElement('ul')
         let devices = Object.keys(lightLog[date])
         devices.forEach((e,i)=>{

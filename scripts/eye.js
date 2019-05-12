@@ -32,7 +32,9 @@ toggleClick = () => {
     document.querySelector('#eye').classList.remove('selected')
     document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{e.setAttribute('d','m0,0q140,170 280,0')})
   }else{
-    updateStatus(deviceNames)
+    for(let deviceName of deviceNames){
+      updateStatus(deviceName)
+    }
     document.querySelector('#eye').classList.add('selected')
     document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{
       e.setAttribute('d','m10,0q130,220 260,0')
