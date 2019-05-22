@@ -2,6 +2,8 @@
 
 **Control Magicblue Smart Bulbs over Web Bluetooth**
 
+![Light Demo](https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Fmagicbluedemo.gif)
+
 This is a small project aimed at reverse engineering one of the [cheaper Bluetooth lightbulbs](https://www.gearbest.com/smart-light-bulb/pp_230349.html) out there and controlling it directly through a browser without the official app. As of writing this, **Web Bluetooth is only supported in Chrome**. 
 
 There are multiple versions of the **Magicblue** bulb that are floating around. It's possible some versions are configured slightly differently and need further developement. I personally used [this bulb](https://www.amazon.com/Magic-Light-Bluetooth-Smart-Bulb/dp/B00Y6X93EQ?ref_=bl_dp_s_web_9321634011&th=1) for my experiments.
