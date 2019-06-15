@@ -14,6 +14,10 @@ I began the project by reading [Urish's Medium post](https://medium.com/@urish/r
 I haven't yet tested all Magicblue bulb versions. But V6-V10 bulbs should work. 
 V1 is still unstable, being unable to set schedule. May come back to it in the future.
 
+![Connect Demo](https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Fmagicblue-connect.gif)
+![Options Demo](https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Fmagicblue-options.gif)
+![Controller Demo](https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Fmagicblue-controller.gif)
+
 ## Usage
 You can view the demo [here](https://magicblue.glitch.me) or remix your own project with the button below.
 
