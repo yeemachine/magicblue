@@ -67,7 +67,7 @@ deviceSelect = () => {
     updateStatus(allSelected()[0])
   }else{
     document.querySelectorAll('section, button, #cover').forEach((e)=>{e.classList.add('hide');})
-    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_Default.png?v=1570307524259')
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_Default.png')
   }
 },
 updateStatus = (deviceName) => {
@@ -77,7 +77,7 @@ updateStatus = (deviceName) => {
     document.querySelector('#eye').classList.remove('selected');
   }  
   if(magicblue.status[deviceName].mode === 'rgb'){
-    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_RGB.png?v=1570307524375')
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_RGB.png')
     magicblue.devices[deviceName].rgb = magicblue.status[deviceName].rgb.slice(0)
     let rgb = magicblue.devices[deviceName].rgb.join(',') || magicblue.status[deviceName].rgb.join(',') 
     document.querySelectorAll('.effect').forEach((e)=>{e.classList.remove('selected');})
@@ -91,7 +91,7 @@ updateStatus = (deviceName) => {
   document.querySelector('#pupil-light').setAttribute('fill','rgb('+rgb+')')
   }
   if(magicblue.status[deviceName].mode === 'white'){
-    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_White.png?v=1570307524304')
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_White.png')
     let white = magicblue.devices[deviceName].white || magicblue.status[deviceName].white
     magicblue.devices[deviceName].white = white
     let alpha = white/255
@@ -141,7 +141,7 @@ updateSchedule = (deviceName) => {
             magicblue.devices[deviceName].white = white
             sliderVal.white = white
             updateRadial()
-            document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-w-32x32.png?1550026004701')
+            document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_White.png')
           }  
         }else{
            string = string+' will turn off'
@@ -267,7 +267,7 @@ magicblue.on('disconnected', function (e) {
   if(!Object.keys(magicblue.devices).length){
     hideAll()
     document.querySelector('.connect-button i').innerHTML = 'bluetooth'
-    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Ffavicon-d-32x32.png?1550026016197')
+    document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_Default.png')
   }else{
     displayDevices()
   }
