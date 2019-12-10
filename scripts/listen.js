@@ -20,6 +20,9 @@ turnOff = () => {
 disconnect = () => {
   magicblue.disconnect()
 },
+connect = () =>{
+  magicblue.connect()
+},
 setSchedule = () => {
   magicblue.setSchedule([
   {
@@ -63,6 +66,7 @@ annyang.addCommands({
 	'turn on': turnOn,
 	'turn off': turnOff,
   'disconnect':disconnect,
+  'connect':connect,
   'set schedule':setSchedule,
   'remove schedule':removeSchedule
 }); 
