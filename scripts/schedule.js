@@ -336,17 +336,32 @@ document.querySelector('button.schedule').addEventListener('click',()=>{
     document.querySelector('button.schedule i').innerHTML = 'alarm'
   }
 })
+  
+  
+  
+  
 document.querySelector('.cover').addEventListener('click',()=>{
   document.querySelectorAll('.cover, nav .buttons>.effect.selected, nav .schedule.selected').forEach(e=>{e.classList.remove('selected')})
   document.querySelectorAll('.buttons>.effect container,.schedule>container').forEach(e=>{e.classList.add("hide")})
   document.querySelector('button.schedule i').innerHTML = 'alarm'
   document.querySelector('.effect button i').innerHTML = 'blur_on'
-  if(event.currentTarget.classList.contains('initial')){
-    document.querySelector('#cover').classList.add('hide')
-    document.querySelectorAll('.bluetooth, .info').forEach(e=>{e.classList.add("appear")})
-    event.currentTarget.classList.remove('initial')  
-  }
 })
+  
+ document.querySelectorAll('.bluetooth, .info, .mic-button').forEach(e=>{
+   e.classList.add("appear")
+ }) 
+document.querySelector('#cover').classList.add('hide')
+document.querySelectorAll('.cover, nav .buttons>.effect.selected, nav .schedule.selected').forEach(e=>{e.classList.remove('selected')})
+document.querySelectorAll('.buttons>.effect container,.schedule>container').forEach(e=>{e.classList.add("hide")})
+document.querySelector('button.schedule i').innerHTML = 'alarm'
+document.querySelector('.effect button i').innerHTML = 'blur_on'
+
+  
+  
+  
+  
+  
+  
 document.querySelector('div.timer .title .cancel').addEventListener('click',()=>{goBack('.timer','.scheduleList')})
 document.querySelector('.timer li.repeat').addEventListener('click',()=>{goForward('.timer','container>div.repeat')})
 document.querySelector('div.repeat .title .material-icons').addEventListener('click',()=>{goBack('container>div.repeat','.timer')})
