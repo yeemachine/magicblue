@@ -21,7 +21,7 @@ disconnect = () => {
   magicblue.disconnect()
 },
 connect = () =>{
-  magicblue.connect()
+  magicblue.search()
 },
 setSchedule = () => {
   magicblue.setSchedule([
