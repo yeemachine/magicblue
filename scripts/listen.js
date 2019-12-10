@@ -1,15 +1,20 @@
 (()=>{
-const red = () => {
-  magicblue.setRGB('255,0,0')
+const red = (value) => {
+  let rgb = isNaN(value) ? '255,0,0': value+',0,0'
+  magicblue.setRGB(rgb)
 },
-green = () => {
-  magicblue.setRGB('0,255,0')
+green = (value) => {
+   let rgb = isNaN(value) ? '0,255,0': '0,'+value+',0'
+  magicblue.setRGB(rgb)
 },
-blue = () => {
-  magicblue.setRGB('0,0,255')
+blue = (value) => {
+  let rgb = isNaN(value) ? '0,0,255' : '0,0,'+value
+  magicblue.setRGB(rgb)
 },
-warmWhite = () => {
-  magicblue.setWhite(255)
+warmWhite = (value) => {
+  console.log(value)
+  let intensity = isNaN(value) ? 255 : value
+  magicblue.setWhite(intensity)
 },
 turnOn = () => {
   magicblue.turnOn()
@@ -62,10 +67,10 @@ document.querySelector('.mic-button').addEventListener('click', ()=>{
 
 // Voice commands
 annyang.addCommands({
-	'red': red,
-	'green': green,
-	'blue': blue,
-  'warm white': warmWhite,
+	'red *value': red,
+	'green *value': green,
+	'blue *value': blue,
+  'white *value': warmWhite,
 	'turn on': turnOn,
 	'turn off': turnOff,
   'disconnect':disconnect,
