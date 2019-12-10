@@ -113,6 +113,12 @@ nav{
   opacity:0;
   left: 48px;
 }
+.mic-button{
+  opacity:0
+}
+.mic-button.appear{
+  animation:appear 1s 1s forwards
+}
 .mic-button.selected, .mic-button.selected:hover{
   background:white;
   color:rgb(255,48,31)

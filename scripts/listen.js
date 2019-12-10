@@ -21,7 +21,8 @@ disconnect = () => {
   magicblue.disconnect()
 },
 connect = () =>{
-  magicblue.search()
+  console.log('connect')
+  document.querySelector('.connect-button').click()
 },
 setSchedule = () => {
   magicblue.setSchedule([
@@ -49,11 +50,13 @@ document.querySelector('.mic-button').addEventListener('click', ()=>{
   if(event.currentTarget.classList.contains('selected')){
       event.currentTarget.classList.remove('selected')
       annyang.abort();
+    console.log('voice assistant stopped')
   }else{
       event.currentTarget.classList.add('selected')
     	annyang.start({
         continuous: true
       });
+      console.log('voice assistant started')
   }
 });
 
