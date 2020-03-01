@@ -51,7 +51,10 @@ h4{
 }
 label{
   font-size:12px;
-  opacity:0.5
+  color:rgba(255,255,255,0.5)
+}
+.devices label.connecting{
+  animation: 1s appear 0s infinite alternate-reverse;
 }
 nav{
   display:flex;
@@ -242,6 +245,7 @@ button.hide{
 }
 .devices>div>div:hover{
   opacity:1;
+  cursor:pointer;
 }
 .devices>div>div.selected{
   text-decoration: none;
