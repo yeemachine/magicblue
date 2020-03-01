@@ -241,23 +241,33 @@ dimmer = () => {
 }
 
 let loadingAnimation
+let numConnecting = 0
+let connectingLabel = document.querySelector('.devices label')
 //Connecting Device
 magicblue.on('connecting', (deviceName) => {
   console.log('Connecting to '+deviceName);
   document.querySelector('.connect-button i').innerHTML = 'bluetooth_searching'
   let count = 0;
-  loadingAnimation = setInterval(() => {
-    count++;
-    document.querySelector('.devices label').innerHTML = 'Connecting' + new Array(count % 5).join('.');
-  }, 500);
+  if(numConnecting === 0){
+    loadingAnimation = setInterval(() => {
+      count++;
+      connectingLabel.classList.add('connecting')
+      connectingLabel.innerHTML = 'Connecting' + new Array(count % 5).join('.');
+    }, 500);
+  }
+  numConnecting += 1
 });
 //Device Connected
 magicblue.on('connected', (deviceName) => {
   console.log(deviceName + ' is connected.');
+  numConnecting -= 1
   magicblue.devices[deviceName].selected = true
-  document.querySelector('.connect-button i').innerHTML = 'bluetooth_connected'
   magicblue.request('status,schedule',deviceName)
-  clearInterval(loadingAnimation)
+  if(numConnecting === 0){
+    clearInterval(loadingAnimation)
+    connectingLabel.innerHTML = 'bluetooth_connected'
+    connectingLabel.classList.remove('connecting')
+  }
   showAll()
   startRecord[deviceName] = new Date()
 });
