@@ -32,10 +32,9 @@ showAll = () => {
   displayDevices()
 },
 displayDevices = () => {
-  let container = document.querySelector('.devices')
-  container.innerHTML = '<label>Connected</label>'
+  let container = document.querySelector('.devices div')
+  container.innerHTML = ''
   let deviceArray = Object.keys(magicblue.devices)
-  let deviceContainer = document.createElement('div')
   deviceArray.forEach((e,i)=>{
     let object = document.createElement('div')
     object.innerHTML = e
@@ -43,15 +42,14 @@ displayDevices = () => {
     if(magicblue.devices[e].selected === true){
       object.classList.add('selected')
     }
-    deviceContainer.appendChild(object)
+    container.appendChild(object)
     if((i+1)<deviceArray.length){
       let object = document.createElement('div')
       object.classList.add('divider')
       object.innerHTML = ','
-      deviceContainer.appendChild(object)
+      container.appendChild(object)
     }
   })
-  container.appendChild(deviceContainer)
 },
 deviceSelect = () => {
   let deviceName = event.currentTarget.innerHTML
@@ -255,6 +253,7 @@ magicblue.on('connecting', (deviceName) => {
       connectingLabel.innerHTML = 'Connecting' + new Array(count % 5).join('.');
     }, 500);
   }
+  console.log(loadingAnimation)
   numConnecting += 1
 });
 //Device Connected
@@ -263,9 +262,12 @@ magicblue.on('connected', (deviceName) => {
   numConnecting -= 1
   magicblue.devices[deviceName].selected = true
   magicblue.request('status,schedule',deviceName)
+  console.log(numConnecting)
+  document.querySelector('.devices').classList.add('connected')
   if(numConnecting === 0){
     clearInterval(loadingAnimation)
-    connectingLabel.innerHTML = 'bluetooth_connected'
+    document.querySelector('.connect-button i').innerHTML = 'bluetooth_connected'
+    connectingLabel.innerHTML = 'Connected'
     connectingLabel.classList.remove('connecting')
   }
   showAll()
@@ -276,6 +278,7 @@ magicblue.on('disconnected', function (e) {
   console.log(e+' is disconnected.');
   if(!Object.keys(magicblue.devices).length){
     hideAll()
+    document.querySelector('.devices').classList.remove('connected')
     document.querySelector('.connect-button i').innerHTML = 'bluetooth'
     document.querySelector('#favicon').setAttribute('href','https://cdn.glitch.com/00fa2c64-1159-440f-ad08-4b1ef2af9d8b%2Feye_Default.png')
   }else{
