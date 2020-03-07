@@ -56,6 +56,9 @@ label{
 .devices label.connecting{
   animation: 1s appear 0s infinite alternate-reverse;
 }
+.devices.connected h4{
+  display:none;
+}
 nav{
   display:flex;
   justify-content:flex-start;
