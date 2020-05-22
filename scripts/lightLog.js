@@ -1,10 +1,7 @@
 let startRecord = {}
-// let dummydata = {
-//   '3-16-2019':{'LEDBlue-8B10AA3A':453,'LEDBlue-169C02D6':397}
-// ,'3-17-2019':{'LEDBlue-169C02D6':677},'3-18-2019':{'LEDBlue-8B10AA3A':213},'3-19-2019':{'LEDBlue-8B10AA3A':333,'LEDBlue-169C02D6':377},'3-20-2019':{'LEDBlue-8B10AA3A':6,'LEDBlue-169C02D6':11}}
-  
-// window.localStorage.setItem('magicblue',JSON.stringify(dummydata))
 let lightLog = (window.localStorage.getItem('magicblue') !== null) ? JSON.parse(window.localStorage.getItem('magicblue')) : {}
+
+let deviceHistory = {}
 
 const dateDiffInMin = (a, b) => {
   const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate(), a.getHours(), a.getMinutes(), a.getSeconds());
@@ -13,22 +10,74 @@ const dateDiffInMin = (a, b) => {
 }
 
 let saveLightInfo = (deviceName) => {
+  saveLightColor()
   let endRecord = new Date()
   let lightUsage = dateDiffInMin(startRecord[deviceName],endRecord)
   let key = (startRecord[deviceName].getMonth()+1)+'-'+startRecord[deviceName].getDate()+'-'+startRecord[deviceName].getFullYear()
 
   if(lightLog.hasOwnProperty(key)){
     if(lightLog[key].hasOwnProperty(deviceName)){
-      lightLog[key][deviceName] += lightUsage
+      lightLog[key][deviceName].usage += lightUsage
+      Object.keys(deviceHistory[deviceName].colors).forEach(e=>{
+        if(deviceHistory[deviceName].colors[e]>100){
+          if(lightLog[key][deviceName].colors.hasOwnProperty(e)){
+            lightLog[key][deviceName].colors[e] += deviceHistory[deviceName].colors[e]
+          }else{
+            lightLog[key][deviceName].colors[e] = deviceHistory[deviceName].colors[e]
+          }
+        } 
+      })
     }else{
-      lightLog[key][deviceName] = lightUsage
+      lightLog[key][deviceName] = {
+        usage:lightUsage,
+        colors:deviceHistory[deviceName].colors || null
+      }
     }
   }else{
     lightLog[key] = {}
-    lightLog[key][deviceName] = lightUsage
+    lightLog[key][deviceName] = {usage:lightUsage, colors:deviceHistory[deviceName].colors || null}
   }
+  console.log(lightLog)
   window.localStorage.setItem('magicblue', JSON.stringify(lightLog));
   updateShadowEyes()
+  
+}
+
+let saveLightColor = () => {
+  if(Object.keys(magicblue.devices).length > 0){
+    Object.keys(magicblue.devices).forEach((e,i)=>{
+
+      if(!deviceHistory[e]){
+        deviceHistory[e] = {
+          lastSelected:{
+            color:null,
+            time:null
+          },
+          colors:{
+
+          }   
+        }
+      }
+
+      let newSelectedColor = magicblue.devices[e].white || magicblue.devices[e].rgb
+      let lastSelectedColor = deviceHistory[e].lastSelected.color || newSelectedColor
+      let lastDate = deviceHistory[e].lastSelected.time || new Date()
+
+
+      if(deviceHistory[e].colors[lastSelectedColor.toString()]){
+        deviceHistory[e].colors[lastSelectedColor.toString()] += dateDiffInMin(lastDate,new Date())
+      }else{
+        deviceHistory[e].colors[lastSelectedColor.toString()] = dateDiffInMin(lastDate,new Date())
+      }
+
+      deviceHistory[e].lastSelected = {
+        color:newSelectedColor.toString(),
+        time:new Date()
+      }
+
+      console.log(deviceHistory,newSelectedColor,magicblue.devices[e])
+    })
+  }
 }
 
 let updateShadowEyes = () => {
@@ -46,7 +95,7 @@ let updateShadowEyes = () => {
         let deviceList = document.createElement('ul')
         let devices = Object.keys(lightLog[date])
         devices.forEach((e,i)=>{
-          let usage = lightLog[date][e]
+          let usage = lightLog[date][e].usage || lightLog[date][e]
           let minutes = Math.floor(usage/60)
           let seconds = usage - minutes * 60
           seconds = (seconds>0) ? ' '+seconds+'s' : ''
