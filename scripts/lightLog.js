@@ -18,29 +18,38 @@ let saveLightInfo = (deviceName) => {
   if(lightLog.hasOwnProperty(key)){
     if(lightLog[key].hasOwnProperty(deviceName)){
       lightLog[key][deviceName].usage += lightUsage
-      Object.keys(deviceHistory[deviceName].colors).forEach(e=>{
-        if(deviceHistory[deviceName].colors[e]>100){
-          if(lightLog[key][deviceName].colors.hasOwnProperty(e)){
-            lightLog[key][deviceName].colors[e] += deviceHistory[deviceName].colors[e]
-          }else{
-            lightLog[key][deviceName].colors[e] = deviceHistory[deviceName].colors[e]
-          }
-        } 
-      })
+      updateColorHistory(deviceName,key)
     }else{
       lightLog[key][deviceName] = {
         usage:lightUsage,
-        colors:deviceHistory[deviceName].colors || null
+        colors:{}
       }
+      updateColorHistory(deviceName,key)
     }
   }else{
-    lightLog[key] = {}
-    lightLog[key][deviceName] = {usage:lightUsage, colors:deviceHistory[deviceName].colors || null}
+    lightLog[key] = {};
+    lightLog[key][deviceName] = {
+      usage:lightUsage, 
+      colors:{}
+    };
+    updateColorHistory(deviceName,key)
   }
   console.log(lightLog)
   window.localStorage.setItem('magicblue', JSON.stringify(lightLog));
   updateShadowEyes()
   
+}
+
+let updateColorHistory = (deviceName,key)=> {
+  Object.keys(deviceHistory[deviceName].colors).forEach(e=>{
+    if(deviceHistory[deviceName].colors[e]>30){
+      if(lightLog[key][deviceName].colors.hasOwnProperty(e)){
+        lightLog[key][deviceName].colors[e] += deviceHistory[deviceName].colors[e]
+      }else{
+        lightLog[key][deviceName].colors[e] = deviceHistory[deviceName].colors[e]
+      }
+    } 
+  })
 }
 
 let saveLightColor = () => {
@@ -59,21 +68,36 @@ let saveLightColor = () => {
         }
       }
 
-      let newSelectedColor = magicblue.devices[e].white || magicblue.devices[e].rgb
+      let newSelectedColor = magicblue.devices[e].white || magicblue.devices[e].rgb || null
+
+      if(!newSelectedColor){
+        if(magicblue.schedule[e]){
+          const scheduleEndColor = magicblue.schedule[e][0].end
+          newSelectedColor = scheduleEndColor
+          console.log(scheduleEndColor)
+        } 
+      }
+
       let lastSelectedColor = deviceHistory[e].lastSelected.color || newSelectedColor
       let lastDate = deviceHistory[e].lastSelected.time || new Date()
 
 
-      if(deviceHistory[e].colors[lastSelectedColor.toString()]){
-        deviceHistory[e].colors[lastSelectedColor.toString()] += dateDiffInMin(lastDate,new Date())
-      }else{
-        deviceHistory[e].colors[lastSelectedColor.toString()] = dateDiffInMin(lastDate,new Date())
+      if(newSelectedColor !== null){
+        if(deviceHistory[e].colors[lastSelectedColor.toString()]){
+          deviceHistory[e].colors[lastSelectedColor.toString()] += dateDiffInMin(lastDate,new Date())
+        }else{
+          deviceHistory[e].colors[lastSelectedColor.toString()] = dateDiffInMin(lastDate,new Date())
+        }
+  
+        deviceHistory[e].lastSelected = {
+          color:newSelectedColor.toString(),
+          time:new Date()
+        }
       }
+      
 
-      deviceHistory[e].lastSelected = {
-        color:newSelectedColor.toString(),
-        time:new Date()
-      }
+
+     
 
       console.log(deviceHistory,newSelectedColor,magicblue.devices[e])
     })

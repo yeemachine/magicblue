@@ -308,6 +308,7 @@ magicblue.on('receiveNotif', function (e) {
   }
   if(notifType === 'schedule'){
       schedule.updateList(deviceName)
+      saveLightColor()
   }
 });
 
