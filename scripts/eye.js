@@ -28,6 +28,9 @@ const mouseCapture = (e) => {
 toggleClick = () => {
   let deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
   magicblue.turnOnOff(deviceNames)
+  for(let deviceName of deviceNames){
+    saveLightInfo(deviceName)
+  }
   if(document.querySelector('#eye').classList.contains('selected')){
     document.querySelector('#eye').classList.remove('selected')
     document.querySelectorAll('#eye-bottom,#eye-top,#pupil-top,#pupil-bottom').forEach((e,i)=>{e.setAttribute('d','m0,0q140,170 280,0')})
