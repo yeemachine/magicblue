@@ -246,6 +246,7 @@ function toggleRing(selected){
 
 function dragended(d) {
   document.querySelectorAll('.active').forEach((e,i)=>{e.classList.remove('active')})
+  saveLightColor()
   cursor.clear()
 }
   

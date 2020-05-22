@@ -24,7 +24,7 @@ if(isMobileDevice() === true){
 const hideAll = () => {
   updateRadial('clear')
   document.querySelectorAll('section, button, #cover').forEach((e)=>{e.classList.add('hide');})
-  document.querySelector('.devices').innerHTML = '<label>Connect Light</label><h4>An experiment with Chrome Web Bluetooth</h4>'
+  document.querySelector('.devices').innerHTML = '<label>Connect Light</label><h4>An experiment with Chrome Web Bluetooth</h4><div></div>'
   document.querySelector('#eye').classList.add('selected');
 },
 showAll = () => {
@@ -32,7 +32,7 @@ showAll = () => {
   displayDevices()
 },
 displayDevices = () => {
-  let container = document.querySelector('.devices div')
+  let container = document.querySelector('.devices>div')
   container.innerHTML = ''
   let deviceArray = Object.keys(magicblue.devices)
   deviceArray.forEach((e,i)=>{
@@ -192,6 +192,7 @@ setRGB = () => {
       deviceNames = (allSelected().length > 0) ? allSelected() : Object.keys(magicblue.devices)
   deviceNames.forEach((e,i)=>{
     magicblue.devices[e].rgb = [r,g,b]
+    magicblue.devices[e].white = null
   })
   
   magicblue.setRGB([dr,dg,db].join(','),deviceNames)  
@@ -212,6 +213,7 @@ setWhite = () => {
       deviceNames = (allSelected() .length > 0) ? allSelected() : Object.keys(magicblue.devices)
   deviceNames.forEach((e,i)=>{
     magicblue.devices[e].white = intensity
+    magicblue.devices[e].rgb = null
   })
   document.querySelector('#pupil-light').setAttribute('fill','rgb('+[255*alpha,215*alpha,0].join(',')+')')
   magicblue.setWhite(Math.round(intensity*a), deviceNames)
@@ -298,9 +300,10 @@ magicblue.on('receiveNotif', function (e) {
   let deviceName = e.device,
   notifType = e.type,
   notifObj = magicblue[notifType][deviceName]
-  if(Object.keys(magicblue.devices).length === 1){
+  if(Object.keys(magicblue.devices).length > 0){
     if(notifType === 'status'){
       updateStatus(deviceName)
+      saveLightColor()
     }
   }
   if(notifType === 'schedule'){
